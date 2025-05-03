@@ -1,0 +1,34 @@
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+  }
+  
+  .navbar-brand h1 {
+    font-size: 1.8rem;
+  }
+  
+  .navbar-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navbar-nav li {
+    margin: 0;
+  }
+  
+  .navbar-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+  
+  .navbar-nav a:hover {
+    text-decoration: underline;
+  }
+  
