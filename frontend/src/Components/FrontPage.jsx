@@ -1,59 +1,172 @@
-import React from "react";
+import React, { useEffect } from "react";
 import '../Styles/FrontPage.css';
-
+import AnimatedGlobe from "../Components/AnimatedGlobe";
+import { motion } from "framer-motion";
 const FrontPage = () => {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    });
+
+    const hiddenElements = document.querySelectorAll('.hidden');
+    hiddenElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="frontpage-container">
       {/* Hero Section */}
-      <header className="hero">
+      <header className="hero hidden">
+      <div className="globe-overlay">
+        <AnimatedGlobe />
+      </div>
         <div className="hero-content">
-          <h1>Welcome to CollabNerds</h1>
-          <p>The ultimate platform for students to pitch ideas, find collaborators, and manage projects</p>
-          <button className="cta-button">Get Started</button>
+         
+
+<motion.h1
+  className="hero-title"
+  initial="hidden"
+  animate="visible"
+  variants={{
+    visible: {
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  }}
+>
+  {"Find Your Perfect Team for Innovation".split(" ").map((word, index) => (
+    <motion.span
+      key={index}
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+      }}
+      style={{ display: "inline-block", marginRight: "8px" }}
+    >
+      {word}
+    </motion.span>
+  ))}
+</motion.h1>
+          <p className="subtitle">CollabNerds connects students with brilliant ideas to talented collaborators. Pitch your project, build your team, and bring your vision to life.</p>
+          
+          <div className="cta-buttons">
+            <button className="primary-button hover-scale">
+              Get Started
+              <span className="button-glow"></span>
+            </button>
+            <button className="secondary-button hover-scale">
+              Explore Projects
+              <span className="button-glow"></span>
+            </button>
+          </div>
+        </div>
+        
+        <div className="hero-deco">
+          <div className="deco-orb purple"></div>
+          <div className="deco-orb blue"></div>
         </div>
       </header>
 
-      {/* About Section */}
-      <section className="about">
-        <h2>About CollabNerds</h2>
-        <p>
-          CollabNerds is a collaborative platform designed to help students connect with like-minded individuals,
-          pitch innovative ideas, and bring them to life through teamwork. It's a space for growth, collaboration, and creativity.
-        </p>
-      </section>
-
-      {/* Key Features Section */}
-      <section className="features">
-        <h2>Core Features</h2>
-        <div className="feature-cards">
-          <div className="feature-card">
-            <h3>Pitch Ideas</h3>
-            <p>Share your innovative project ideas with the community and find collaborators.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Team Management</h3>
-            <p>Easily manage your project teams with built-in task assignments, schedules, and progress tracking.</p>
-          </div>
-          <div className="feature-card">
-            <h3>Real-Time Chat</h3>
-            <p>Communicate with your team in real-time through our integrated chat system.</p>
+      {/* Innovation Section */}
+      <section className="innovation-section hidden">
+        <div className="section-inner">
+          <h2>Fueling Innovation One Collab at a Time</h2>
+          <div className="innovation-grid">
+            {['💡', '👥', '💬'].map((icon, index) => (
+              <div className="innovation-card hover-float" key={index}>
+                <div className="card-icon">{icon}</div>
+                <h3>{['Project Pitching', 'Team Management', 'Built-in Communication'][index]}</h3>
+                <p>{[
+                  'Share your idea with goals, description & required skills to attract the perfect team.',
+                  'Accept or decline contributor requests and manage team roles efficiently.',
+                  'Chat with team members and schedule meetings using our integrated tools.'
+                ][index]}</p>
+                <div className="card-glow"></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Sign-Up / Log-In Section */}
-      <section className="auth">
-        <h2>Join CollabNerds</h2>
-        <button className="cta-button">Sign Up</button>
-        <p>Already have an account? <a href="/login">Log In</a></p>
+      {/* How It Works Section */}
+      <section className="how-it-works">
+        <div className="section-inner">
+          <h2>How CollabNerds Works</h2>
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <h3>Create Account</h3>
+              <p>Sign up with email or Google in seconds</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <h3>Pitch Your Idea</h3>
+              <p>Share project details and required skills</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <h3>Build Your Team</h3>
+              <p>Review and accept contributor requests</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">4</div>
+              <h3>Collaborate</h3>
+              <p>Use built-in tools to bring your idea to life</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="final-cta">
+        <div className="cta-content">
+          <h2>Ready to Find Your Dream Team?</h2>
+          <p>Join CollabNerds today and turn your ideas into reality with the perfect collaborators.</p>
+          <button className="cta-button">Get Started Now</button>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <p>&copy; 2025 CollabNerds. All rights reserved.</p>
-        <div className="social-links">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+      <footer className="main-footer">
+        <div className="footer-content">
+          <div className="footer-section">
+            <h4>Platform</h4>
+            <ul>
+              <li>How It Works</li>
+              <li>Features</li>
+              <li>Pricing</li>
+            </ul>
+          </div>
+          
+          <div className="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li>Blog</li>
+              <li>Documentation</li>
+              <li>Support</li>
+            </ul>
+          </div>
+
+          <div className="footer-section">
+            <h4>Company</h4>
+            <ul>
+              <li>About Us</li>
+              <li>Contact</li>
+              <li>Privacy Policy</li>
+            </ul>
+          </div>
+
+          <div className="footer-branding">
+            <h3>CollabNerds</h3>
+            <p>By students, for students. Fueling innovation one collab at a time.</p>
+            <p className="copyright">© 2025 CollabNerds. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
