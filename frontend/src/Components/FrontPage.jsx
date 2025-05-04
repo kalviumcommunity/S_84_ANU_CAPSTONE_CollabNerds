@@ -135,38 +135,46 @@ const FrontPage = () => {
       {/* Footer */}
       <footer className="main-footer">
         <div className="footer-content">
-          <div className="footer-section">
-            <h4>Platform</h4>
-            <ul>
-              <li>How It Works</li>
-              <li>Features</li>
-              <li>Pricing</li>
-            </ul>
-          </div>
-          
-          <div className="footer-section">
-            <h4>Resources</h4>
-            <ul>
-              <li>Blog</li>
-              <li>Documentation</li>
-              <li>Support</li>
-            </ul>
-          </div>
 
-          <div className="footer-section">
-            <h4>Company</h4>
-            <ul>
-              <li>About Us</li>
-              <li>Contact</li>
-              <li>Privacy Policy</li>
-            </ul>
-          </div>
+<div className="footer-wrapper">
+  <svg
+    className="footer-wave"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1440 320"
+  >
+    <path
+      fill="#282c34"
+      fillOpacity="1"
+      d="M0,160L60,170.7C120,181,240,203,360,213.3C480,224,600,224,720,192C840,160,960,96,1080,85.3C1200,75,1320,117,1380,138.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+    ></path>
+  </svg>
 
-          <div className="footer-branding">
-            <h3>CollabNerds</h3>
-            <p>By students, for students. Fueling innovation one collab at a time.</p>
-            <p className="copyright">© 2025 CollabNerds. All rights reserved.</p>
-          </div>
+ <div
+  className="footer-branding"
+  style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1.5rem',
+    flexWrap: 'wrap', // optional: wraps on smaller screens
+    textAlign: 'center',
+  }}
+>
+  <h3 style={{ margin: 0, color: '#00d8ff', fontSize: '1.5rem' }}>CollabNerds</h3>
+  <p style={{ margin: 0, color: '#d1d1d1' }}>
+    By students, for students. Fueling innovation one collab at a time.
+  </p>
+  <p
+    className="copyright"
+    style={{ margin: 0, color: '#888', fontSize: '0.9rem' }}
+  >
+    © 2025 CollabNerds. All rights reserved.
+  </p>
+</div>
+
+</div>
+
+
         </div>
       </footer>
     </div>
