@@ -305,13 +305,9 @@ body, html {
     position: relative;
     background-color: #1f1f1f;
     color: white;
-    overflow: hidden;
+    text-align: center;
     padding-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;      /* Center horizontally */
-    justify-content: center;  /* Center vertically if needed */
-    text-align: center;       /* Center text */
+    overflow: hidden;
   }
   
   .footer-wave {
@@ -326,18 +322,17 @@ body, html {
   .footer-branding {
     position: relative;
     z-index: 1;
-    max-width: 800px;
-    width: 100%;
     padding: 60px 20px 40px;
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: center;      /* Center items */
-    text-align: center;       /* Center text */
+    align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
   
   .footer-branding h3 {
-    font-size: 3rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
     color: #00d8ff;
   }
@@ -349,10 +344,11 @@ body, html {
   }
   
   .footer-branding .copyright {
-    font-size: 1.9rem;
+    font-size: 0.9rem;
     color: #888;
     margin-top: 10px;
   }
+  
   
   
   /* === Responsive === */
