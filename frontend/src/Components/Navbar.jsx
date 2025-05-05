@@ -5,19 +5,20 @@ import '../Styles/Navbar.css';
 
 const Navbar = () => {
   return (
-    <header className="navbar">
-      <div className="navbar-brand">
-        <h1>CollabNerds</h1>
+    <nav class="navbar">
+      <div class="navbar-brand">
+          <div class="logo-spinner"></div>
+          <h1>CollabNerds</h1></div>
+          <div class="navbar-nav">
+          <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Projects</a></li>
+              <li><a href="#">Teams</a></li>
+              <li><a href="#">Dashboard</a></li>
+              <li><a href="#">Profile</a></li>
+          </ul>
       </div>
-      <nav className="navbar-nav">
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/profile">Profile</Link></li>
-          <li><Link to="/login">Logout</Link></li>
-        </ul>
-      </nav>
-    </header>
+    </nav>
   );
 };
 
