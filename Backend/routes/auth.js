@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const authMiddleware = require('../middleware/auth');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 
@@ -38,6 +39,10 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Login failed' });
   }
+});
+
+router.get('/profile', authMiddleware, (req, res) => {
+    res.json({ message: 'This is a protected profile route', user: req.user });
 });
 
 module.exports = router;
