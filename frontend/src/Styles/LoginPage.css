@@ -1,0 +1,210 @@
+/* LoginPage.css */
+
+.login-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  /* Background blobs */
+  .login-page::before,
+  .login-page::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.3;
+    z-index: 0;
+    animation: floatBlob 18s ease-in-out infinite;
+  }
+  
+  .login-page::before {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #00b4db, transparent);
+    top: 10%;
+    left: 5%;
+  }
+  
+  .login-page::after {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #007bff, transparent);
+    bottom: 5%;
+    right: 5%;
+    animation-delay: 5s;
+  }
+  
+  @keyframes floatBlob {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-20px) scale(1.05);
+    }
+  }
+  
+  .login-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
+  /* Subtle rotating gradients */
+  .login-overlay::before,
+  .login-overlay::after {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    top: -10%;
+    left: -10%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+    animation: rotate 25s linear infinite;
+  }
+  
+  .login-overlay::after {
+    animation-direction: reverse;
+    opacity: 0.4;
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .login-modal {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: scaleFadeIn 0.7s ease-out;
+  }
+  
+  @keyframes scaleFadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95) translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  .login-modal h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #1f1f1f;
+  }
+  
+  .login-subtext {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 25px;
+  }
+  
+  .login-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .login-modal input {
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .login-modal input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  .submit-btn {
+    background: linear-gradient(90deg, #007bff, #00b4db);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.4s ease, transform 0.2s ease;
+  }
+  
+  .submit-btn:hover {
+    background: linear-gradient(90deg, #0056b3, #0099cc);
+    transform: translateY(-2px);
+  }
+  
+  .form-toggle {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .form-toggle span {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .google-login {
+    margin-top: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .google-login:hover {
+    background-color: #f2f2f2;
+    box-shadow: 0 0 12px rgba(66, 133, 244, 0.5);
+  }
+  
+  .error-message {
+    color: #d9534f;
+    background-color: #f8d7da;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  
+  /* SVG wave styling */
+  .login-wave {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
