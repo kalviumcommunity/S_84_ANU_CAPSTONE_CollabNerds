@@ -5,11 +5,11 @@ import '../Styles/Navbar.css';
 
 const Navbar = () => {
   return (
-    <nav class="navbar">
-      <div class="navbar-brand">
-          <div class="logo-spinner"></div>
+    <nav className="navbar">
+      <div className="navbar-brand">
+          <div className="logo-spinner"></div>
           <h1>CollabNerds</h1></div>
-          <div class="navbar-nav">
+          <div className="navbar-nav">
           <ul>
               <li><a href="#">Home</a></li>
               <li><a href="#">Projects</a></li>
