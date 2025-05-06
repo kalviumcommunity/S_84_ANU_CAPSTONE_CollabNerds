@@ -1,23 +1,33 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import FrontPage from './Components/FrontPage';
-import Dashboard from './Components/Dashboard'; // Import Dashboard component
-// import LoginPage from './Components/LoginPage'; // Import your LoginPage component
-import Navbar from './Components/Navbar'; // Import Navbar component
+import Dashboard from './Components/Dashboard';
+import LoginPage from './Components/LoginPage';
+import Navbar from './Components/Navbar';
 import MagicCursorTrail from './Components/MagicCursorTrail';
+import RequireAuth from './Components/RequireAuth';
+import { AuthProvider } from './Context/AuthContext';
 
 function App() {
   return (
-    <Router>
-      <MagicCursorTrail />
-      <Navbar /> {/* Display Navbar on all pages */}
-      <Routes>
-        <Route path="/" element={<FrontPage />} />
-        {/* <Route path="/login" element={<LoginPage />} /> */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        {/* Add more routes as needed */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <MagicCursorTrail />
+        <Navbar /> {/* Keep if you want Navbar on all pages */}
+
+        <Routes>
+          <Route path="/" element={<FrontPage />} />
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Protected Routes */}
+          <Route element={<RequireAuth />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
+
+          {/* Add more protected/public routes here as needed */}
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
