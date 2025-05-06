@@ -46,7 +46,7 @@ const LoginPage = () => {
 
       {/* Modal Container */}
       <div className="login-modal">
-        <h2>{isLogin ? 'Welcome Back 👋' : 'Join CollabNerds – it’s free!'}</h2>
+        <h2>{isLogin ? 'Welcome Back ' : 'Join CollabNerds – it’s free!'}</h2>
         <p className="login-subtext">
           {isLogin
             ? 'Log in to collaborate and innovate with fellow students.'
@@ -114,18 +114,6 @@ const LoginPage = () => {
           {isLogin ? ' Continue with Google' : ' Sign up with Google'}
         </button>
       </div>
-      <svg
-  className="login-wave"
-  viewBox="0 0 1440 320"
-  xmlns="http://www.w3.org/2000/svg"
-  preserveAspectRatio="none"
->
-  <path
-    fill="#ffffff"
-    fillOpacity="0.4"
-    d="M0,160L48,149.3C96,139,192,117,288,122.7C384,128,480,160,576,186.7C672,213,768,235,864,218.7C960,203,1056,149,1152,117.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-  ></path>
-</svg>
 
     </div>
   );
