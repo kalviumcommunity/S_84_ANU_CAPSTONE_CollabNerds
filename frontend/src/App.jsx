@@ -10,21 +10,19 @@ import { AuthProvider } from './Context/AuthContext';
 
 function App() {
   return (
-    <AuthProvider>
+    <AuthProvider> {/* Wrap the entire app in AuthProvider */}
       <Router>
         <MagicCursorTrail />
-        <Navbar /> {/* Keep if you want Navbar on all pages */}
-
+        <Navbar /> {/* Navbar will show on all pages */}
+        
         <Routes>
           <Route path="/" element={<FrontPage />} />
           <Route path="/login" element={<LoginPage />} />
-
-          {/* Protected Routes */}
+          
+          {/* Protected Routes using Outlet */}
           <Route element={<RequireAuth />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
-
-          {/* Add more protected/public routes here as needed */}
         </Routes>
       </Router>
     </AuthProvider>

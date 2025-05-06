@@ -1,7 +1,15 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 
-export default function RequireAuth() {
+function RequireAuth() {
   const { user } = useAuth();
-  return user ? <Outlet /> : <Navigate to="/login" />;
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  return <Outlet />; // 👈 Needed to render nested routes
 }
+
+export default RequireAuth;
