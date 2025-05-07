@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
+const JWT_SECRET = "SeCrEt_KeY";
 
 // Signup
 router.post('/signup', async (req, res) => {
@@ -41,8 +41,9 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/profile', authMiddleware, (req, res) => {
-    res.json({ message: 'This is a protected profile route', user: req.user });
+// Profile (Protected Route)
+router.get('/profile', authMiddleware.protect, (req, res) => {
+  res.json({ message: 'This is a protected profile route', user: req.user });
 });
 
 module.exports = router;

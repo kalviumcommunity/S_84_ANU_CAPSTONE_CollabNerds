@@ -1,4 +1,4 @@
-// LoginPage.jsx
+// src/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
@@ -30,6 +30,7 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok && data.token) {
+        // ✅ Save token and user data to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/dashboard');
@@ -37,8 +38,8 @@ const LoginPage = () => {
         setError(data.message || 'Something went wrong. Please try again.');
       }
     } catch (err) {
-      setError('Network error. Please check your connection.');
       console.error('Network error:', err.message);
+      setError('Network error. Please check your connection.');
     }
   };
 
@@ -48,32 +49,69 @@ const LoginPage = () => {
       <div className="login-modal">
         <h2>{isLogin ? 'Welcome Back' : 'Join CollabNerds – it’s free!'}</h2>
         <p className="login-subtext">
-          {isLogin ? 'Log in to collaborate and innovate with fellow students.' : 'Sign up to start pitching ideas and building projects together.'}
+          {isLogin
+            ? 'Log in to collaborate and innovate with fellow students.'
+            : 'Sign up to start pitching ideas and building projects together.'}
         </p>
+
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           {!isLogin && (
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" autoComplete="name" required />
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your full name"
+              autoComplete="name"
+              required
+            />
           )}
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" required />
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter a strong password" autoComplete={isLogin ? 'current-password' : 'new-password'} required />
-          <button type="submit" className="submit-btn">{isLogin ? 'Let’s Go 🚀' : 'Create Account'}</button>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter a strong password"
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            required
+          />
+          <button type="submit" className="submit-btn">
+            {isLogin ? 'Let’s Go 🚀' : 'Create Account'}
+          </button>
         </form>
 
         <div className="form-toggle">
           {isLogin ? (
             <>
-              <p>New to CollabNerds? <span onClick={() => setIsLogin(false)}>Create an account</span></p>
-              <p><a href="/forgot-password"><span>Forgot your password?</span></a></p>
+              <p>
+                New to CollabNerds?{' '}
+                <span onClick={() => setIsLogin(false)}>Create an account</span>
+              </p>
+              <p>
+                <a href="/forgot-password">
+                  <span>Forgot your password?</span>
+                </a>
+              </p>
             </>
           ) : (
-            <p>Already a member? <span onClick={() => setIsLogin(true)}>Log in instead</span></p>
+            <p>
+              Already a member?{' '}
+              <span onClick={() => setIsLogin(true)}>Log in instead</span>
+            </p>
           )}
         </div>
 
         <button className="google-login">
-          <FcGoogle /> {isLogin ? ' Continue with Google' : ' Sign up with Google'}
+          <FcGoogle />
+          {isLogin ? ' Continue with Google' : ' Sign up with Google'}
         </button>
       </div>
     </div>

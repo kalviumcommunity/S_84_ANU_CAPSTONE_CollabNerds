@@ -1,16 +1,15 @@
+// Simplified version of meetingRoutes.js
+
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware');  // Ensure authentication middleware is correct
 const {
   createMeeting,
-  getUpcomingMeetings,
-  updateMeeting,
-  deleteMeeting
+  getUpcomingMeetings
 } = require('../controllers/meetingController');
 
-router.post('/', protect, createMeeting);
-router.get('/upcoming', protect, getUpcomingMeetings);
-router.put('/:id', protect, updateMeeting);
-router.delete('/:id', protect, deleteMeeting);
+// Define routes
+router.post('/', protect, createMeeting);  // POST to create a meeting
+router.get('/upcoming', protect, getUpcomingMeetings);  // GET to get upcoming meetings
 
 module.exports = router;

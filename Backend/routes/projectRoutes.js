@@ -1,3 +1,4 @@
+// routes/projectRoutes.js
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
@@ -10,11 +11,12 @@ const {
   deleteProject
 } = require('../controllers/projectController');
 
+// Define routes
 router.post('/', protect, createProject);
-router.get('/mine', protect, getMyProjects);
-router.get('/contributions', protect, getMyContributions);
-router.post('/:id/request', protect, requestToJoinProject);
-router.post('/:id/accept', protect, acceptCollabRequest);
-router.delete('/:id', protect, deleteProject);
+router.get('/my-projects', protect, getMyProjects);
+router.get('/my-contributions', protect, getMyContributions);
+router.post('/:projectId/request', protect, requestToJoinProject);
+router.post('/:projectId/accept', protect, acceptCollabRequest);
+router.delete('/:projectId', protect, deleteProject);
 
 module.exports = router;

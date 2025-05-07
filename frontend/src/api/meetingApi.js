@@ -1,8 +1,9 @@
-import axios from 'axios';
+// meetingApi.js
+import axios from './axiosInstance';
 
-const API = axios.create({ baseURL: '/api' });
+export const createMeeting = async (meetingData) => {
+    const response = await axios.post('/meetings', meetingData);
+    return response.data;
+  };
 
-export const createMeeting = (data) => API.post('/meetings', data);
-export const getUpcomingMeetings = () => API.get('/meetings/upcoming');
-export const updateMeeting = (id, data) => API.put(`/meetings/${id}`, data);
-export const deleteMeeting = (id) => API.delete(`/meetings/${id}`);
+export const getUpcomingMeetings = () => axios.get('/meetings/upcoming');

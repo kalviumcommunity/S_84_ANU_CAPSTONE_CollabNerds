@@ -1,11 +1,22 @@
-// src/api/projectApi.js
-import axios from './axiosInstance';
+// api/projectApi.js
+import axios from 'axios';
 
-const API = axios.create({ baseURL: '/api' });
+const API = axios.create({
+  baseURL: 'http://localhost:6767/api',
+});
 
-export const createProject = (data) => API.post('/projects', data);
-export const getMyProjects = () => API.get('/projects/mine');
-export const getMyContributions = () => API.get('/projects/contributions');
-export const requestToJoinProject = (projectId) => API.post(`/projects/${projectId}/request`);
-export const acceptRequest = (id, userId) => API.post(`/projects/${id}/accept`, { userId }); // This function
+// Attach token from localStorage
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const createProject = (projectData) => API.post('/projects', projectData);
+export const getMyProjects = () => API.get('/projects/my-projects');
+export const getMyContributions = () => API.get('/projects/my-contributions');
 export const deleteProject = (id) => API.delete(`/projects/${id}`);
+export const requestToJoinProject = (id) => API.post(`/projects/${id}/request`);
+export const acceptRequest = (id, userId) => API.post(`/projects/${id}/accept`, { userId });
