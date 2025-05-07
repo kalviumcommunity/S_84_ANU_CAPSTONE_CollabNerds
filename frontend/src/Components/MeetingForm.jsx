@@ -1,19 +1,48 @@
-// src/Components/MeetingForm.jsx
 import React, { useState } from 'react';
+import { createMeeting } from '../api/meetingApi';
 
-const MeetingForm = ({ onCreate }) => {
+const MeetingForm = ({ onCreated }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [scheduledFor, setScheduledFor] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onCreate({ title, description });
+    setError('');
+    setLoading(true);
+
+    try {
+      const newMeeting = await createMeeting({
+        title,
+        description,
+        scheduledFor,
+      });
+
+      console.log("Meeting Created:", newMeeting);
+
+      // Pass back the new meeting to parent (Dashboard)
+      if (onCreated) {
+        onCreated(newMeeting);
+      }
+
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setScheduledFor('');
+    } catch (err) {
+      console.error("Error creating meeting:", err);
+      setError(err?.response?.data?.message || "Failed to create meeting.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="form-card">
       <label>
-        Title
+        Title:
         <input
           type="text"
           value={title}
@@ -21,15 +50,31 @@ const MeetingForm = ({ onCreate }) => {
           required
         />
       </label>
+
       <label>
-        Description
+        Description:
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
       </label>
-      <button type="submit">Create Meeting</button>
+
+      <label>
+        Scheduled For:
+        <input
+          type="datetime-local"
+          value={scheduledFor}
+          onChange={(e) => setScheduledFor(e.target.value)}
+          required
+        />
+      </label>
+
+      {error && <p className="error-text">{error}</p>}
+
+      <button type="submit" className="primary-btn" disabled={loading}>
+        {loading ? 'Creating...' : 'Create Meeting'}
+      </button>
     </form>
   );
 };

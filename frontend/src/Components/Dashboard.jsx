@@ -18,33 +18,30 @@ const Dashboard = () => {
   const fetchProjects = async () => {
     try {
       const res = await getMyProjects();
-      console.log("Fetched projects:", res.data);
-      setProjects(Array.isArray(res.data) ? res.data : []);
+      setProjects(Array.isArray(res.data) ? res.data : []); // Ensure data is an array
     } catch (err) {
       console.error("Failed to fetch projects:", err);
-      setProjects([]);
+      setProjects([]); // Fallback to empty array
     }
   };
 
   const fetchContributions = async () => {
     try {
       const res = await getMyContributions();
-      console.log("Fetched contributions:", res.data);
-      setContributions(Array.isArray(res.data) ? res.data : []);
+      setContributions(Array.isArray(res.data) ? res.data : []); // Ensure data is an array
     } catch (err) {
       console.error("Failed to fetch contributions:", err);
-      setContributions([]);
+      setContributions([]); // Fallback to empty array
     }
   };
 
   const fetchMeetings = async () => {
     try {
       const res = await getUpcomingMeetings();
-      console.log("Fetched meetings:", res.data);
-      setMeetings(Array.isArray(res.data) ? res.data : []);
+      setMeetings(Array.isArray(res.data) ? res.data : []); // Ensure data is an array
     } catch (err) {
       console.error("Failed to fetch meetings:", err);
-      setMeetings([]);
+      setMeetings([]); // Fallback to empty array
     }
   };
 
@@ -107,7 +104,7 @@ const Dashboard = () => {
           <div className="section-header">
             <h2>My Projects</h2>
             <button className="primary-btn" onClick={() => setShowProjectForm(!showProjectForm)}>
-              + Create New Project
+              {showProjectForm ? 'Cancel' : '+ Create New Project'}
             </button>
           </div>
 
@@ -119,43 +116,52 @@ const Dashboard = () => {
           )}
 
           <div className="projects-grid">
-            {Array.isArray(projects) && projects.map((project) => (
-              <div key={project._id} className="project-card">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="tags">
-                  {project.tags.map((tag) => (
-                    <span key={tag} className="tag">{tag}</span>
-                  ))}
-                </div>
-                <div className="project-footer">
-                  <button onClick={() => handleDelete(project._id)}>Delete</button>
-                </div>
-                {project.requests?.length > 0 && (
-                  <div className="requests">
-                    <h4>Join Requests:</h4>
-                    {project.requests.map((requestUserId) => (
-                      <div key={requestUserId} className="request-item">
-                        <span>User ID: {requestUserId}</span>
-                        <button onClick={() => handleAcceptRequest(project._id, requestUserId)}>Accept</button>
-                      </div>
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <div key={project._id} className="project-card">
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                  <div className="tags">
+                    {Array.isArray(project.tags) && project.tags.map((tag) => (
+                      <span key={tag} className="tag">{tag}</span>
                     ))}
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="project-footer">
+                    <button onClick={() => handleDelete(project._id)}>Delete</button>
+                    {/* Add Edit functionality here if needed */}
+                  </div>
+                  {project.requests?.length > 0 && (
+                    <div className="requests">
+                      <h4>Join Requests:</h4>
+                      {project.requests.map((requestUserId) => (
+                        <div key={requestUserId} className="request-item">
+                          <span>User ID: {requestUserId}</span>
+                          <button onClick={() => handleAcceptRequest(project._id, requestUserId)}>Accept</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No projects yet. Start by creating one!</p>
+            )}
           </div>
         </section>
 
         <section className="contributions-section">
           <h2>My Contributions</h2>
           <div className="projects-grid">
-            {Array.isArray(contributions) && contributions.map((project) => (
-              <div key={project._id} className="project-card">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-              </div>
-            ))}
+            {contributions.length > 0 ? (
+              contributions.map((project) => (
+                <div key={project._id} className="project-card">
+                  <h3>{project.title}</h3>
+                  <p>{project.description}</p>
+                </div>
+              ))
+            ) : (
+              <p>You are not contributing to any projects yet.</p>
+            )}
           </div>
         </section>
 
@@ -163,28 +169,37 @@ const Dashboard = () => {
           <div className="section-header">
             <h2>Upcoming Meetings</h2>
             <button className="primary-btn" onClick={() => setShowMeetingForm(!showMeetingForm)}>
-              + Schedule New Meeting
+              {showMeetingForm ? 'Cancel' : '+ Schedule New Meeting'}
             </button>
           </div>
 
           {showMeetingForm && (
-            <MeetingForm onCreated={() => {
+            <MeetingForm onCreated={(newMeeting) => {
+              setMeetings((prev) => [...prev, newMeeting]);
               setShowMeetingForm(false);
-              fetchMeetings();
             }} />
           )}
 
           <div className="meetings-grid">
-            {Array.isArray(meetings) && meetings.map((meeting) => (
-              <div key={meeting._id} className="meeting-card">
-                <h3>{meeting.title}</h3>
-                <p>{meeting.description}</p>
-                <span>Scheduled For: {new Date(meeting.scheduledFor).toLocaleString()}</span>
-              </div>
-            ))}
+            {meetings.length > 0 ? (
+              meetings.map((meeting) => (
+                <div key={meeting._id} className="meeting-card">
+                  <h3>{meeting.title}</h3>
+                  <p>{meeting.description}</p>
+                  <span>
+                    Scheduled For:{' '}
+                    {new Intl.DateTimeFormat('en-US', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    }).format(new Date(meeting.scheduledFor))}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p>No upcoming meetings.</p>
+            )}
           </div>
         </section>
-
       </div>
     </div>
   );
