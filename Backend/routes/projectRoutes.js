@@ -1,21 +1,22 @@
-const express = require('express');
-const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
+const express = require('express'); // ✅ FIXED
+const router = express.Router();    // ✅ FIXED
+
 const {
   createProject,
   getMyProjects,
-  getMyContributions,
+  updateProject,
+  deleteProject,
   requestToJoinProject,
   acceptCollabRequest,
-  deleteProject
 } = require('../controllers/projectController');
 
-// Define routes
+const { protect } = require('../middleware/authMiddleware');
+
 router.post('/', protect, createProject);
 router.get('/my-projects', protect, getMyProjects);
-router.get('/my-contributions', protect, getMyContributions);
-router.post('/:projectId/request', protect, requestToJoinProject);
-router.post('/:projectId/accept', protect, acceptCollabRequest);
+router.put('/:projectId', protect, updateProject);
 router.delete('/:projectId', protect, deleteProject);
+router.post('/:projectId/join', protect, requestToJoinProject);
+router.post('/:projectId/accept', protect, acceptCollabRequest);
 
 module.exports = router;
