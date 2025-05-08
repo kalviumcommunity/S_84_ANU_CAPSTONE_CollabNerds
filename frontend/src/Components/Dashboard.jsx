@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import MyProjects from './MyProjects';
 import UpcomingMeetings from './UpcomingMeetings';
+import "../Styles/Dashboard.css";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('projects');
@@ -13,10 +14,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div className="dashboard-container">
       <Sidebar onTabChange={setActiveTab} activeTab={activeTab} />
-      <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
-        {renderContent()}
+      <div className="dashboard-main">
+        <h2 className="section-title">My Projects</h2>
+        <div className="projects-section">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );

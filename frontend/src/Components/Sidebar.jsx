@@ -1,8 +1,8 @@
 import React from 'react';
-
+import "../Styles/Sidebar.css"
 const Sidebar = ({ onTabChange, activeTab }) => {
   return (
-    <div style={{ width: '220px', background: '#1e1e2f', color: '#fff', padding: '1rem' }}>
+    <div className="custom-sidebar">
       <h2 style={{ marginBottom: '2rem' }}>CollabNerds</h2>
       <div>
         <button
