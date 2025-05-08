@@ -1,28 +1,27 @@
-require('dotenv').config();  // Load environment variables
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const mongoose = require('mongoose');
 const projectRoutes = require('./routes/projectRoutes');
 const meetingRoutes = require('./routes/meetingRoutes');
 const authRoutes = require('./routes/auth');
 const cors = require('cors');
-// const helmet = require('helmet');
-// const rateLimit = require('express-rate-limit');
-
-// Setup for CORS
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-
-const corsOptions = {
-  origin: true,
-  credentials: true,
-};
 
 const app = express();
 
-// Apply security middleware
-// app.use(helmet());
-app.use(cors(corsOptions));
+// === CORS Setup ===
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
 
-// Custom middleware for CORS headers (optional, but safe to keep)
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -32,26 +31,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware for parsing JSON data
-app.use(express.json());
+// === Middleware ===
+app.use(express.json()); // Parse incoming JSON
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use('/api/projects', projectRoutes);
+// === Routes (mounted under /api) ===
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);  // Ensure this is mounted under /api/projects
 app.use('/api/meetings', meetingRoutes);
 
-// MongoDB Connection
-mongoose.connect("mongodb+srv://ANU-SONI:anuCollabNerds25.@capstone.h6hn2eg.mongodb.net/?retryWrites=true&w=majority&appName=Capstone")
-  .then(() => console.log("✅ MongoDB connected!"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+// === MongoDB Connection ===
+const MONGO_URI = 'mongodb+srv://ANU-SONI:anuCollabNerds25.@capstone.h6hn2eg.mongodb.net/?retryWrites=true&w=majority&appName=Capstone';
 
-// Global error handling middleware
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("✅ MongoDB connected!"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// === Global Error Handler ===
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong' });
+  console.error('❌ Internal Server Error:', err);
+  res.status(500).json({ message: 'Something went wrong on the server.' });
 });
 
+// === Server Start ===
 const PORT = 6767;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

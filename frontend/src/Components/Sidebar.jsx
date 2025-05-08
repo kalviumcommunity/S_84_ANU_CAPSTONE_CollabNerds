@@ -1,51 +1,51 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  FaHome, 
-  FaProjectDiagram, 
-  FaUsers, 
-  FaComments, 
-  FaCog 
-} from 'react-icons/fa';
-import '../Styles/Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ onTabChange, activeTab }) => {
   return (
-    <aside className="sidebar">
-      <ul>
-        <li className="active">
-          <Link to="/dashboard/overview">
-            <FaHome />
-            <span>Overview</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/projects">
-            <FaProjectDiagram />
-            <span>Projects</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/teams">
-            <FaUsers />
-            <span>Teams</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/messages">
-            <FaComments />
-            <span>Messages</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/settings">
-            <FaCog />
-            <span>Settings</span>
-          </Link>
-        </li>
-      </ul>
-    </aside>
+    <div style={{ width: '220px', background: '#1e1e2f', color: '#fff', padding: '1rem' }}>
+      <h2 style={{ marginBottom: '2rem' }}>CollabNerds</h2>
+      <div>
+        <button
+          onClick={() => onTabChange('projects')}
+          style={activeTab === 'projects' ? styles.active : styles.button}
+        >
+          My Projects
+        </button>
+        <button
+          onClick={() => onTabChange('meetings')}
+          style={activeTab === 'meetings' ? styles.active : styles.button}
+        >
+          Schedule Meeting
+        </button>
+      </div>
+    </div>
   );
+};
+
+const styles = {
+  button: {
+    display: 'block',
+    width: '100%',
+    background: 'transparent',
+    border: 'none',
+    color: '#ccc',
+    padding: '0.8rem',
+    textAlign: 'left',
+    cursor: 'pointer',
+    marginBottom: '0.5rem',
+  },
+  active: {
+    display: 'block',
+    width: '100%',
+    background: '#333356',
+    border: 'none',
+    color: '#fff',
+    padding: '0.8rem',
+    textAlign: 'left',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    marginBottom: '0.5rem',
+  },
 };
 
 export default Sidebar;

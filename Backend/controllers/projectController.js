@@ -131,8 +131,8 @@ const deleteProject = async (req, res) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Not authorized" });
+    if (project.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Not authorized to delete this project" });
     }
 
     await project.deleteOne();  // ✅ Correct way to delete in Mongoose

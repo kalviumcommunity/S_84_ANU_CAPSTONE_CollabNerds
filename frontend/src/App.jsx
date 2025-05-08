@@ -7,7 +7,7 @@ import Navbar from './Components/Navbar';
 import MagicCursorTrail from './Components/MagicCursorTrail';
 import RequireAuth from './Components/RequireAuth';
 import { AuthProvider } from './Context/AuthContext';
-
+import Dashboard from './Components/Dashboard';
 // Temporarily comment or remove these until you recreate them
 // import Dashboard from './Components/Dashboard';
 // import PublicProjects from './Components/PublicProjects';
@@ -28,7 +28,7 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<RequireAuth />}>
-            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
       </Router>

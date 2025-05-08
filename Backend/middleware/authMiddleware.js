@@ -1,7 +1,6 @@
-// middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-const SECRETKey = "SeCrEt_KeY"
+const SECRETKey = "SeCrEt_KeY";
 
 export const protect = async (req, res, next) => {
   try {
@@ -20,4 +19,3 @@ export const protect = async (req, res, next) => {
     res.status(401).json({ message: 'Unauthorized', error: err.message });
   }
 };
-

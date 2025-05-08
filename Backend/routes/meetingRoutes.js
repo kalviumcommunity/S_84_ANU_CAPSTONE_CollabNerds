@@ -1,15 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');  // Ensure authentication middleware is correct
-const {
-  createMeeting,
-  getUpcomingMeetings,
-  deleteMeeting
-} = require('../controllers/meetingController');
+const { protect } = require('../middleware/authMiddleware');
+const meetingController = require('../controllers/meetingController');
 
-// Define routes
-router.post('/', protect, createMeeting);  // POST to create a meeting
-router.get('/upcoming', protect, getUpcomingMeetings);  // GET to get upcoming meetings
-router.delete('/:id', protect, deleteMeeting);  // DELETE a meeting by ID
+// These should be functions!
+router.post('/', protect, meetingController.createMeeting);
+router.get('/upcoming', protect, meetingController.getUpcomingMeetings);
+router.delete('/:id', protect, meetingController.deleteMeeting);
 
 module.exports = router;

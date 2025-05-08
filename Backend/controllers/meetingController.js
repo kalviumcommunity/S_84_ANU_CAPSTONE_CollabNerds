@@ -4,15 +4,17 @@ const Meeting = require('../models/Meeting');
 exports.createMeeting = async (req, res) => {
   try {
     const { title, description, scheduledFor } = req.body;
+    if (!title || !description || !scheduledFor) {
+      return res.status(400).json({ error: 'Title, Description, and Scheduled Date are required.' });
+    }
     const meeting = await Meeting.create({
       title,
       description,
       scheduledFor,
-      createdBy: req.user._id, // assuming user is authenticated
+      createdBy: req.user._id,
     });
     res.status(201).json(meeting);
   } catch (err) {
-    console.error("❌ Error in createMeeting:", err);
     res.status(500).json({ error: "Failed to create meeting" });
   }
 };
@@ -23,10 +25,10 @@ exports.getUpcomingMeetings = async (req, res) => {
     const now = new Date();
     const upcomingMeetings = await Meeting.find({
       scheduledFor: { $gte: now },
+      createdBy: req.user._id
     }).sort({ scheduledFor: 1 });
     res.status(200).json(upcomingMeetings);
   } catch (err) {
-    console.error("❌ Error in getUpcomingMeetings:", err);
     res.status(500).json({ error: "Failed to fetch meetings" });
   }
 };
@@ -44,7 +46,6 @@ exports.deleteMeeting = async (req, res) => {
     await meeting.deleteOne();
     res.status(200).json({ message: "Meeting deleted successfully" });
   } catch (err) {
-    console.error("❌ Error in deleteMeeting:", err);
     res.status(500).json({ error: "Failed to delete meeting" });
   }
 };
