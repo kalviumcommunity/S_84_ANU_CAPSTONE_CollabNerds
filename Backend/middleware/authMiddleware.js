@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 const SECRETKey = "SeCrEt_KeY"
+
 export const protect = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];

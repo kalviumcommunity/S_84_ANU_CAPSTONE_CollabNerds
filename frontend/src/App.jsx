@@ -1,30 +1,34 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Make sure BrowserRouter is correctly imported
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import FrontPage from './Components/FrontPage';
-import Dashboard from './Components/Dashboard';
 import LoginPage from './Components/LoginPage';
 import Navbar from './Components/Navbar';
 import MagicCursorTrail from './Components/MagicCursorTrail';
 import RequireAuth from './Components/RequireAuth';
 import { AuthProvider } from './Context/AuthContext';
-import PublicProjects from './pages/PublicProjects';
+
+// Temporarily comment or remove these until you recreate them
+// import Dashboard from './Components/Dashboard';
+// import PublicProjects from './Components/PublicProjects';
 
 function App() {
   return (
     <AuthProvider>
-      {/* Make sure this Router wraps all routes and navigation */}
       <Router>
         <MagicCursorTrail />
-        <Navbar /> {/* Navbar will show on all pages */}
-        
+        <Navbar />
+
         <Routes>
           <Route path="/" element={<FrontPage />} />
           <Route path="/login" element={<LoginPage />} />
-          
-          {/* Protected Routes using RequireAuth */}
-          <Route path="/explore" element={<PublicProjects />} />
+
+          {/* Uncomment after you recreate PublicProjects */}
+          {/* <Route path="/explore" element={<PublicProjects />} /> */}
+
+          {/* Protected Routes */}
           <Route element={<RequireAuth />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           </Route>
         </Routes>
       </Router>

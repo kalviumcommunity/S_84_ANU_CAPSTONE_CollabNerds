@@ -124,25 +124,23 @@ const acceptCollabRequest = async (req, res) => {
 
 // Delete a project
 const deleteProject = async (req, res) => {
-  const { projectId } = req.params;
-
   try {
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(req.params.id);
 
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      return res.status(404).json({ error: "Project not found" });
     }
 
-    // Ensure only the project owner can delete the project
-    if (project.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'You are not authorized to delete this project' });
+    if (project.owner.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Not authorized" });
     }
 
-    await project.remove();
-    res.status(200).json({ message: 'Project deleted successfully' });
-  } catch (err) {
-    console.error('❌ Error deleting project:', err.message);
-    res.status(500).json({ message: 'Server Error', error: err.message });
+    await project.deleteOne();  // ✅ Correct way to delete in Mongoose
+
+    res.status(200).json({ message: "Project deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
