@@ -63,7 +63,7 @@ const UpcomingMeetings = () => {
           <li key={meet._id}>
             <strong>{meet.title}</strong> on {new Date(meet.scheduledFor).toLocaleString()}
             <br />
-            <button onClick={() => handleDelete(meet._id)}>Delete</button>
+            <button onClick={() => handleDelete(meet._id)}>Completed ? </button>
           </li>
         ))}
       </ul>

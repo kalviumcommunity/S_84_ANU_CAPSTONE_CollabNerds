@@ -1,0 +1,181 @@
+Background container with deep blue theme
+.my-projects-container {
+    padding: 2rem;
+    background: linear-gradient(to bottom right, #1a103d, #2d1b5a);
+    color: #ffffff;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    position: relative;
+    z-index: 1;
+    overflow-x: hidden;
+  }
+  
+  /* Headings with ivory white text and gradient effect */
+  h2, h3 {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    background: linear-gradient(to right, #c77dff, #9d4edd);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 12px rgba(192, 125, 255, 0.3);
+  }
+  
+  /* Project form styling with ivory white text on a deep background */
+  .project-form {
+    background: rgba(45, 25, 90, 0.7);
+    padding: 2rem;
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(126, 107, 196, 0.3);
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+  }
+  
+  /* Form labels in ivory white */
+  .project-form label {
+    font-weight: 600;
+    color: #f5f5f5; /* Ivory white text */
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  /* Form inputs and textarea with ivory white text */
+  .project-form input,
+  .project-form textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: rgba(59, 34, 112, 0.6);
+    border: 1px solid #9a7eff;
+    border-radius: 12px;
+    color: #f5f5f5; /* Ivory white text */
+    font-size: 1rem;
+    transition: 0.3s ease;
+  }
+  
+  /* Focus effect for inputs and textarea */
+  .project-form input:focus,
+  .project-form textarea:focus {
+    outline: none;
+    border-color: #caaeff;
+    box-shadow: 0 0 8px rgba(202, 174, 255, 0.3);
+  }
+  
+  /* Button style with gradient and ivory white text */
+  .project-form button {
+    background: linear-gradient(to right, #9d4edd, #7b2cbf);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  /* Hover effect for button */
+  .project-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(157, 78, 221, 0.4);
+  }
+  
+  /* Project list grid with ivory white card text */
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  /* Card style with deep purple background and ivory white text */
+  .project-card {
+    background: linear-gradient(145deg, #3a1a6e, #532f92);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    color: #f5f5f5; /* Ivory white text */
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Hover effect for project card */
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 28px rgba(126, 107, 196, 0.4);
+  }
+  
+  /* Project title in ivory white */
+  .project-card h4 {
+    font-size: 1.3rem;
+    color: #e6d6ff;
+    margin-bottom: 0.3rem;
+  }
+  
+  /* Tech stack text in lighter shade of ivory */
+  .project-card span {
+    font-size: 0.9rem;
+    color: #bfaaff;
+    margin-left: 0.4rem;
+  }
+  
+  /* Project description in ivory white */
+  .project-card p {
+    color: #d0c4f7;
+    font-size: 1rem;
+    margin: 0.5rem 0 1rem;
+  }
+  
+  /* Button group styling */
+  .btn-group {
+    display: flex;
+    gap: 0.8rem;
+  }
+  
+  /* Button styles within group */
+  .btn-group button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  /* Edit button with gradient */
+  .btn-group .edit-btn {
+    background-color: #7c4dff;
+    color: #fff;
+  }
+  
+  /* Edit button hover effect */
+  .btn-group .edit-btn:hover {
+    background-color: #9b70ff;
+  }
+  
+  /* Delete button with red background */
+  .btn-group .delete-btn {
+    background-color: #e53935;
+    color: #fff;
+  }
+  
+  /* Delete button hover effect */
+  .btn-group .delete-btn:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Animation for float effect */
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  

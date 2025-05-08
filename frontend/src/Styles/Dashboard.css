@@ -1,261 +1,183 @@
-  /* === Dashboard Layout === */
-  .dashboard-container {
-    display: flex;
-    height: 100vh;
-    background: linear-gradient(to bottom right, #f5f3ff, #e0d7ff);
-    font-family: 'Segoe UI', sans-serif;
-    overflow: hidden;
-  }
+/* === Global Layout === */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0d1b2a;
+  color: #e0e1dd;
+}
 
-  /* === Main content area === */
-  .dashboard-main {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-    position: relative;
-    animation: fadeIn 0.6s ease-in-out;
-    backdrop-filter: blur(8px);
-  }
+/* === Dashboard Container === */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #0a192f, #1b263b);
+  overflow: hidden;
+}
 
-  /* Core Layout Enhancements */
-  .dashboard {
-    padding: 3rem;
-    background: linear-gradient(to right, #100720, #1f103f);
-    min-height: 100vh;
-    font-family: 'Poppins', sans-serif;
-    color: #fff;
-    overflow-x: hidden;
-  }
+/* === Sidebar === */
+.sidebar {
+  width: 250px;
+  background: #1b263b;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  color: #e0e1dd;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+}
 
-  /* Section Headings */
-  .section-title {
-    font-size: 2.2rem;
-    margin-bottom: 1rem;
-    color: #e0c3fc;
-    background: linear-gradient(to right, #e0c3fc, #8ec5fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: fadeInDown 0.6s ease-in-out;
-  }
+.sidebar h1 {
+  color: #89c2d9;
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+}
 
-  /* Reusable Glassmorphism Card */
-  .card {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 20px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(10px);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    animation: floatUp 0.6s ease-in-out;
-  }
+.sidebar button,
+.sidebar a {
+  background: none;
+  border: none;
+  color: #e0e1dd;
+  font-size: 1rem;
+  padding: 0.8rem;
+  margin: 0.4rem 0;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
 
-  .card:hover {
-    transform: scale(1.03) rotate(0.5deg);
-    box-shadow: 0 12px 42px rgba(31, 38, 135, 0.5);
-  }
+.sidebar button:hover,
+.sidebar a:hover {
+  background: #415a77;
+  border-radius: 8px;
+  transform: translateX(5px);
+}
 
-  /* Buttons */
-  .card button,
-  .modal button {
-    background: linear-gradient(to right, #a18cd1, #fbc2eb);
-    border: none;
-    border-radius: 12px;
-    padding: 0.6rem 1.2rem;
-    font-weight: bold;
-    color: #1e1e2f;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0.5rem 0.2rem;
-  }
+/* === Main Dashboard Area === */
+.dashboard-main {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+  background: linear-gradient(to bottom right, #0d1b2a, #1e2e3d);
+  position: relative;
+  animation: fadeIn 0.5s ease-in-out;
+}
 
-  .card button:hover,
-  .modal button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
-  }
+/* === Section Titles === */
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #89c2d9;
+}
 
-  /* Inputs & Textarea */
-  .modal input,
-  .modal textarea {
-    width: 100%;
-    padding: 0.6rem;
-    margin: 0.6rem 0;
-    border-radius: 12px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 1rem;
-    backdrop-filter: blur(6px);
-  }
+/* === Card Layout (Glassmorphism + Bubble) === */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  animation: bubblePop 0.6s ease forwards;
+}
 
-  .modal input:focus,
-  .modal textarea:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.15);
-  }
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5);
+}
 
-  /* Modal Style */
-  .modal {
-    background: rgba(20, 20, 40, 0.95);
-    padding: 2rem;
-    border-radius: 16px;
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
-    max-width: 500px;
-    margin: auto;
-    animation: zoomIn 0.4s ease;
-  }
+/* === Buttons === */
+button {
+  background: linear-gradient(to right, #89c2d9, #5e60ce);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
 
-  /* Flex Layouts */
-  .projects-section,
-  .meetings-section {
-    margin-top: 2rem;
-  }
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(94, 96, 206, 0.4);
+}
 
-  .project-item,
-  .meeting-item {
-    margin-bottom: 1.5rem;
-  }
+/* === Form Inputs === */
+input, textarea {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #33415c;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.3s;
+}
 
-  /* Animations */
-  @keyframes floatUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+input:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(137, 194, 217, 0.4);
+}
 
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+/* === Animations === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  @keyframes zoomIn {
-    from {
-      opacity: 0;
-      transform: scale(0.8);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+@keyframes bubblePop {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
   }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
+/* === Scrollbar === */
+.dashboard-main::-webkit-scrollbar {
+  width: 8px;
+}
+.dashboard-main::-webkit-scrollbar-track {
+  background: #0d1b2a;
+}
+.dashboard-main::-webkit-scrollbar-thumb {
+  background-color: #5e60ce;
+  border-radius: 4px;
+}
 
-  /* === Fade In Animation === */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+/* === Responsive Bubble Grid === */
+.project-item,
+.meeting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  animation: bubblePop 0.6s ease;
+}
 
-  /* Scrollbar styling */
-  .dashboard-main::-webkit-scrollbar {
-    width: 6px;
-  }
-  .dashboard-main::-webkit-scrollbar-track {
-    background: #eee;
-  }
-  .dashboard-main::-webkit-scrollbar-thumb {
-    background-color: #b99aff;
-    border-radius: 3px;
-  }
+/* === Form Headings === */
+h2, h3 {
+  color: #a9def9;
+}
 
-  /* === Reusable card styling === */
-  .card-hover-glow {
-    background: white;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 6px 15px rgba(123, 97, 255, 0.1);
-    transition: all 0.3s ease;
-  }
-  .card-hover-glow:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(123, 97, 255, 0.2);
-  }
-
-  /* === Form Elements === */
-  input, textarea {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: #fdfbff;
-    transition: border 0.3s ease, box-shadow 0.3s ease;
-  }
-  input:focus, textarea:focus {
-    border-color: #7b61ff;
-    box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.2);
-    outline: none;
-  }
-
-  /* === Buttons === */
-  button {
-    background: linear-gradient(135deg, #7b61ff, #a084f9);
-    border: none;
-    color: white;
-    padding: 0.6rem 1.4rem;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
-  }
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(123, 97, 255, 0.3);
-  }
-
-  /* === Section Titles === */
-  h2, h3 {
-    color: #392f5a;
-    margin-bottom: 1rem;
-  }
-
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  li {
-    margin-bottom: 1.2rem;
-    padding: 1rem;
-    border-radius: 10px;
-    background: #faf8ff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  }
-
-  /* Smooth tab transitions */
-  .fade-slide-in {
-    animation: slideFade 0.5s ease;
-  }
-
-  @keyframes slideFade {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
+/* === List Reset === */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
