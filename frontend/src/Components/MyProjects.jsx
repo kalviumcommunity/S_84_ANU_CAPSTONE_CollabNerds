@@ -21,7 +21,7 @@ const MyProjects = () => {
   useEffect(() => {
     fetchProjects();
   }, []);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
