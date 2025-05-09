@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:6767',
+  // Use the environment variable from .env file for dynamic base URL
+  baseURL: import.meta.env.VITE_API_BASE_URL, 
   withCredentials: true
 });
 

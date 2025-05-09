@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { protect } = require('../middleware/authMiddleware');
-const JWT_SECRET = "SeCrEt_KeY";
+const JWT_SECRET = process.env.JWT_SECRET;
 const {
   createProject,
   getMyProjects,

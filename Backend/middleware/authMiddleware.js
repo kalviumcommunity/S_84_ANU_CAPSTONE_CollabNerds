@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-const SECRETKey = "SeCrEt_KeY";
+const SECRETKey = process.env.JWT_SECRET;
 
 export const protect = async (req, res, next) => {
   try {
