@@ -9,7 +9,7 @@ const cors = require('cors');
 const app = express();
 
 // === CORS Setup ===
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['http://localhost:5173' ];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -40,7 +40,7 @@ app.use('/api/projects', projectRoutes);  // Ensure this is mounted under /api/p
 app.use('/api/meetings', meetingRoutes);
 
 // === MongoDB Connection ===
-const MONGO_URI = 'mongodb+srv://ANU-SONI:anuCollabNerds25.@capstone.h6hn2eg.mongodb.net/?retryWrites=true&w=majority&appName=Capstone';
+const MONGO_URI = process.env.MONGO_URL;
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
 });
 
 // === Server Start ===
-const PORT = 6767;
+const PORT = process.env.PORT || 6767;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
