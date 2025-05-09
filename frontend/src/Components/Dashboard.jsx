@@ -10,7 +10,7 @@ const Dashboard = () => {
   const renderContent = () => {
     if (activeTab === 'projects') return <MyProjects />;
     if (activeTab === 'meetings') return <UpcomingMeetings />;
-    return null;
+    return null;  
   };
 
   return (
