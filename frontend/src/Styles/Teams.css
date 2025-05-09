@@ -1,0 +1,67 @@
+/* src/Styles/Teams.css */
+
+.teams-container {
+  padding: 2rem;
+  background: linear-gradient(to bottom right, #f7f7ff, #e6e6fa);
+  min-height: 100vh;
+  color: #1e1e2f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.teams-section {
+  margin-bottom: 3rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem 2rem;
+}
+
+.teams-section h2 {
+  font-size: 1.5rem;
+  color: #4b0082;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #cbb0ff;
+  padding-bottom: 0.5rem;
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #f2efff;
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.user-card:hover {
+  transform: scale(1.02);
+}
+
+.user-card span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2e2e3e;
+}
+
+.user-card button {
+  background-color: #7c3aed;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-card button:hover {
+  background-color: #5b21b6;
+}
+
+.no-data {
+  font-style: italic;
+  color: #999;
+  padding-left: 1rem;
+}

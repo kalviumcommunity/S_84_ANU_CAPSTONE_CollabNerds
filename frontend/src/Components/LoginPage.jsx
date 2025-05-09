@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
@@ -12,7 +11,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'http://localhost:6767';
+  const API_BASE_URL = 'http://localhost:6767'; // Change this to your API base URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +32,8 @@ const LoginPage = () => {
         // ✅ Save token and user data to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
+
+        // Redirect to dashboard or any protected page
         navigate('/dashboard');
       } else {
         setError(data.message || 'Something went wrong. Please try again.');
