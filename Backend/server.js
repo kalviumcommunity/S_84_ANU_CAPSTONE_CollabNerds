@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const projectRoutes = require('./routes/projectRoutes');
 const meetingRoutes = require('./routes/meetingRoutes');
 const authRoutes = require('./routes/auth');
+const chatRoutes = require('./routes/chatRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 app.use(express.json()); // Parse incoming JSON
 
 // === Routes (mounted under /api) ===
+app.use('/api/chat', chatRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);  // Ensure this is mounted under /api/projects
 app.use('/api/meetings', meetingRoutes);
