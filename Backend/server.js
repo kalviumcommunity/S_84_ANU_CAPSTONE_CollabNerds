@@ -1,17 +1,17 @@
 require('dotenv').config(); // Load environment variables
-const express = require('express');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const http = require('http');
-const { Server } = require('socket.io');
+const express = require('express') ;
+const mongoose = require('mongoose') ;
+const jwt = require('jsonwebtoken') ;
+const cors = require('cors') ;
+const http = require('http') ;
+const { Server } = require('socket.io') ;
 
-const projectRoutes = require('./routes/projectRoutes');
-const meetingRoutes = require('./routes/meetingRoutes');
-const authRoutes = require('./routes/auth');
-const chatRoutes = require('./routes/chatRoutes');
-const userRoutes = require('./routes/userRoutes');
-const Message = require('./models/Message');
+const projectRoutes = require('./routes/projectRoutes') ;
+const meetingRoutes = require('./routes/meetingRoutes') ;
+const authRoutes = require('./routes/auth') ;
+const chatRoutes = require('./routes/chatRoutes') ;
+const userRoutes = require('./routes/userRoutes') ;
+const Message = require('./models/Message') ; 
 
 const app = express();
 

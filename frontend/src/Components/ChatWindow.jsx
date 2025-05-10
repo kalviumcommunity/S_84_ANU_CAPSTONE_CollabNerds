@@ -106,7 +106,7 @@ const normalizeSender = (senderId) => {
   };
 
   if (loadingUsers) {
-    return <div style={{ padding: 20 }}>Loading chat...</div>;
+    return <div style={{ padding: 20 }}>Loading Chat... !</div>;
   }
 
   const getPartnerName = () => {
@@ -116,7 +116,7 @@ const normalizeSender = (senderId) => {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Chat with {getPartnerName()}</h2>
+      <h2>Chat with {getPartnerName()} 🤍</h2>
       <div style={{
         height: 300,
         overflowY: 'auto',
