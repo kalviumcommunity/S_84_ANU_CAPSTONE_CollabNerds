@@ -7,4 +7,4 @@ const chatRequestSchema = new mongoose.Schema({
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
 }, { timestamps: true });
 
-module.exports = mongoose.model('ChatRequest', chatRequestSchema);
+module.exports = mongoose.model('ChatRequest', chatRequestSchema) ;
