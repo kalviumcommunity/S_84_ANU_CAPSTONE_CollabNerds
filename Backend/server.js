@@ -1,15 +1,18 @@
 require('dotenv').config(); // Load environment variables
 const express = require('express');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
+
 const projectRoutes = require('./routes/projectRoutes');
 const meetingRoutes = require('./routes/meetingRoutes');
 const authRoutes = require('./routes/auth');
 const chatRoutes = require('./routes/chatRoutes');
-const cors = require('cors');
-const http = require('http'); // Required for Socket.IO server
-const { Server } = require('socket.io'); // Required for Socket.IO
-const userRoutes = require('./routes/userRoutes'); // Import user routes
+const userRoutes = require('./routes/userRoutes');
 const Message = require('./models/Message');
+
 const app = express();
 
 // === CORS Setup ===
@@ -27,61 +30,79 @@ app.use(cors({
 }));
 
 // === Middleware ===
-app.use(express.json()); // Parse incoming JSON
+app.use(express.json());
 
-// === Routes (mounted under /api) ===
-app.use('/api/users',userRoutes);
+// === Routes ===
+app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);  // Ensure this is mounted under /api/projects
+app.use('/api/projects', projectRoutes);
 app.use('/api/meetings', meetingRoutes);
 
 // === MongoDB Connection ===
 const MONGO_URI = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(MONGO_URI )
 .then(() => console.log("✅ MongoDB connected!"))
 .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // === Create HTTP Server ===
-const server = http.createServer(app); // Create HTTP server using Express app
+const server = http.createServer(app);
 
 // === Socket.IO Setup ===
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',  // Change to your frontend's URL
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST'],
-    credentials: true,  // Allow cookies (withCredentials)
+    credentials: true
+  }
+});
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (!token) {
+    return next(new Error("Authentication error: No token"));
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    socket.userId = decoded.id;
+    next();
+  } catch (err) {
+    next(new Error("Authentication error: Invalid token"));
   }
 });
 
 io.on('connection', (socket) => {
-  console.log('✅ A user connected');
+  console.log(`✅ User connected with ID: ${socket.userId}`);
 
-  socket.on('joinRoom', (roomId) => {
-    socket.join(roomId);
-    console.log(`✅ Joined room: ${roomId}`);
-  });
+  // Join user to their own room (so we can emit to them using their userId)
+  socket.join(socket.userId);
 
+  // Handle chat messages
   socket.on('sendMessage', async ({ content, to }) => {
-    const token = socket.handshake.auth.token;
-    if (!token) return;
+    try {
+      const message = new Message({
+        sender: socket.userId,
+        receiver: to,
+        content
+      });
+      await message.save();
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // make sure JWT_SECRET exists
-    const from = decoded.id;
-
-    const message = new Message({ sender: from, receiver: to, content });
-    await message.save();
-
-    io.to(to).emit('receiveMessage', { content, sender: from });
-    io.to(from).emit('receiveMessage', { content, sender: from }); // echo back to sender
+      // Create a room name for communication between users
+      const room = [socket.userId, to].sort().join('_');
+      
+      // Emit to both users via their individual rooms
+      io.to(room).emit('receiveMessage', {
+        content,
+        sender: socket.userId
+      });
+    } catch (err) {
+      console.error("❌ Error sending message:", err.message);
+    }
   });
 
   socket.on('disconnect', () => {
-    console.log('❌ A user disconnected');
+    console.log(`❌ User disconnected: ${socket.userId}`);
   });
 });
 
@@ -92,8 +113,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong on the server.' });
 });
 
-// === Server Start ===
+// === Start Server ===
 const PORT = process.env.PORT || 6767;
-server.listen(PORT, () => { // Listen on HTTP server, not directly on app
+server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

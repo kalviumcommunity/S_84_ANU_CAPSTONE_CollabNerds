@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../Styles/Teams.css'; // Make sure you style this accordingly
 
 const Teams = () => {
   const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [partners, setPartners] = useState([]);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
   const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -23,7 +25,6 @@ const Teams = () => {
       const res = await axios.get('http://localhost:6767/api/users', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Exclude the current user and users who are already chat partners
       const filtered = res.data.filter(
         u => u._id !== currentUser._id && !partners.some(p => p._id === u._id)
       );
@@ -64,7 +65,7 @@ const Teams = () => {
       );
       fetchUsers();
     } catch (err) {
-      console.error('Error sending request:', err);
+      console.error('Error sending request:', err.response?.data || err.message);
     }
   };
 
@@ -82,37 +83,53 @@ const Teams = () => {
     }
   };
 
+  const handleChatNavigate = (partnerId) => {
+    navigate(`/chat/${partnerId}`);
+  };
+
   return (
     <div className="teams-container">
       <section>
         <h2>All Users</h2>
-        {users.length === 0 ? <p>No users available.</p> : users.map(user => (
-          <div key={user._id} className="user-card">
-            <span>{user.name}</span>
-            <button onClick={() => sendRequest(user._id)}>Request Chat</button>
-          </div>
-        ))}
+        {users.length === 0 ? (
+          <p>No users available.</p>
+        ) : (
+          users.map(user => (
+            <div key={user._id} className="user-card">
+              <span>{user.name}</span>
+              <button onClick={() => sendRequest(user._id)}>Request Chat</button>
+            </div>
+          ))
+        )}
       </section>
 
       <section>
         <h2>Requests</h2>
-        {requests.length === 0 ? <p>No pending requests.</p> : requests.map(req => (
-          <div key={req.from._id} className="request-card">
-            <span>{req.from.name}</span>
-            <button onClick={() => respond(req.from._id, 'accepted')}>Accept</button>
-            <button onClick={() => respond(req.from._id, 'rejected')}>Reject</button>
-          </div>
-        ))}
+        {requests.length === 0 ? (
+          <p>No pending requests.</p>
+        ) : (
+          requests.map(req => (
+            <div key={req.from._id} className="request-card">
+              <span>{req.from.name}</span>
+              <button onClick={() => respond(req.from._id, 'accepted')}>Accept</button>
+              <button onClick={() => respond(req.from._id, 'rejected')}>Reject</button>
+            </div>
+          ))
+        )}
       </section>
 
       <section>
         <h2>Chat Partners</h2>
-        {partners.length === 0 ? <p>No chat partners yet.</p> : partners.map(p => (
-          <div key={p._id} className="partner-card">
-            <span>{p.name}</span>
-            <button onClick={() => window.location.href = `/chat/${p._id}`}>Chat</button>
-          </div>
-        ))}
+        {partners.length === 0 ? (
+          <p>No chat partners yet.</p>
+        ) : (
+          partners.map(p => (
+            <div key={p._id} className="partner-card">
+              <span>{p.name}</span>
+              <button onClick={() => handleChatNavigate(p._id)}>Chat</button>
+            </div>
+          ))
+        )}
       </section>
     </div>
   );

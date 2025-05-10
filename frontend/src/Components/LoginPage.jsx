@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
+import socket from '../socket'; // ✅ import socket
 import "../Styles/LoginPage.css";
 
 const LoginPage = () => {
@@ -11,7 +12,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'http://localhost:6767'; // Change this to your API base URL
+  const API_BASE_URL = 'http://localhost:6767'; // ✅ your API base URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +34,11 @@ const LoginPage = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Redirect to dashboard or any protected page
+        // ✅ Set socket auth and connect
+        socket.auth = { token: data.token };
+        socket.connect();
+
+        // ✅ Navigate to dashboard
         navigate('/dashboard');
       } else {
         setError(data.message || 'Something went wrong. Please try again.');

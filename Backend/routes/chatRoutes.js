@@ -1,4 +1,3 @@
-// routes/chatRoutes.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -35,31 +34,6 @@ router.get('/requests', protect, async (req, res) => {
   }
 });
 
-// Get messages between users
-router.get('/messages/:partnerId', protect, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const partnerId = req.params.partnerId;
-
-    const messages = await Message.find({
-      $or: [
-        { sender: userId, receiver: partnerId },
-        { sender: partnerId, receiver: userId }
-      ]
-    }).sort('timestamp');
-
-    const formatted = messages.map(msg => ({
-      content: msg.content,
-      sender: msg.sender.toString() === userId ? 'me' : 'them'
-    }));
-
-    res.json(formatted);
-  } catch (err) {
-    console.error('Error fetching messages:', err);
-    res.status(500).json({ message: 'Failed to fetch messages' });
-  }
-});
-
 // Respond to a request
 router.post('/respond', protect, async (req, res) => {
   try {
@@ -82,6 +56,31 @@ router.post('/respond', protect, async (req, res) => {
   }
 });
 
+// Get messages between users
+router.get('/messages/:partnerId', protect, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const partnerId = req.params.partnerId;
+
+    const messages = await Message.find({
+      $or: [
+        { sender: userId, receiver: partnerId },
+        { sender: partnerId, receiver: userId }
+      ]
+    }).sort({ timestamp: 1 });
+
+    const formatted = messages.map(msg => ({
+      content: msg.content,
+      sender: msg.sender.toString() === userId ? 'me' : 'them'
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error('Error fetching messages:', err);
+    res.status(500).json({ message: 'Failed to fetch messages' });
+  }
+});
+
 // Get chat partners
 router.get('/partners', protect, async (req, res) => {
   try {
@@ -90,13 +89,28 @@ router.get('/partners', protect, async (req, res) => {
         { from: req.user._id, status: 'accepted' },
         { to: req.user._id, status: 'accepted' }
       ]
-    });
+    }).populate([
+      { path: 'from', select: 'name email' },
+      { path: 'to', select: 'name email' }
+    ]);
 
-    const partnerIds = acceptedRequests.map(req =>
-      req.from.toString() === req.user._id.toString() ? req.to : req.from
-    );
+    const partners = acceptedRequests
+      .map(request => {
+        if (!request.from || !request.to) return null;
 
-    const partners = await User.find({ _id: { $in: partnerIds } }).select('name email');
+        const isSender = request.from._id.toString() === req.user._id.toString();
+        const partner = isSender ? request.to : request.from;
+
+        if (!partner || !partner._id || !partner.name || !partner.email) return null;
+
+        return {
+          _id: partner._id,
+          name: partner.name,
+          email: partner.email
+        };
+      })
+      .filter(Boolean); // remove nulls
+
     res.json(partners);
   } catch (err) {
     console.error('Error fetching chat partners:', err);
