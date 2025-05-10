@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../Styles/Teams.css'; // Make sure you style this accordingly
+import '../Styles/Teams.css';
 
 const Teams = () => {
   const [users, setUsers] = useState([]);
@@ -14,11 +14,16 @@ const Teams = () => {
 
   useEffect(() => {
     if (token) {
+      fetchPartners(); // First fetch partners
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
       fetchUsers();
       fetchRequests();
-      fetchPartners();
     }
-  }, [token]); // Re-run the effect if token changes
+  }, [partners, token]);
 
   const fetchUsers = async () => {
     try {
@@ -45,16 +50,19 @@ const Teams = () => {
     }
   };
 
-  const fetchPartners = async () => {
-    try {
-      const res = await axios.get('http://localhost:6767/api/chat/partners', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setPartners(res.data);
-    } catch (err) {
-      console.error('Error fetching chat partners:', err);
-    }
-  };
+const fetchPartners = async () => {
+  try {
+    const res = await axios.get('http://localhost:6767/api/chat/partners', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    // Filter out duplicates by checking if the partner already exists
+    const uniquePartners = [...new Set(res.data.map(p => p._id))]
+      .map(id => res.data.find(p => p._id === id));
+    setPartners(uniquePartners);
+  } catch (err) {
+    console.error('Error fetching chat partners:', err);
+  }
+};
 
   const sendRequest = async (id) => {
     try {
@@ -63,7 +71,7 @@ const Teams = () => {
         { targetUserId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchUsers();  // Re-fetch the users after sending the request
+      fetchUsers();
     } catch (err) {
       console.error('Error sending request:', err.response?.data || err.message);
     }
@@ -76,8 +84,8 @@ const Teams = () => {
         { requesterId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchRequests();  // Re-fetch the requests after responding
-      fetchPartners();  // Re-fetch partners after responding
+      fetchRequests();
+      fetchPartners();
     } catch (err) {
       console.error('Error responding to request:', err);
     }
@@ -89,10 +97,12 @@ const Teams = () => {
 
   return (
     <div className="teams-container">
-      <section>
-        <h2>All Users</h2>
+      <h1>🤝CollabNerds: Team Up & Create 🚀</h1>
+
+      <section className="teams-section">
+        <h2>🌍 Discover Collaborators</h2>
         {users.length === 0 ? (
-          <p>No users available.</p>
+          <p className="no-data">All potential collaborators are already connected or no new users found.</p>
         ) : (
           users.map(user => (
             <div key={user._id} className="user-card">
@@ -103,30 +113,32 @@ const Teams = () => {
         )}
       </section>
 
-      <section>
-        <h2>Requests</h2>
+      <section className="teams-section">
+        <h2>📩 Pending Requests</h2>
         {requests.length === 0 ? (
-          <p>No pending requests.</p>
+          <p className="no-data">No new chat requests at the moment.</p>
         ) : (
           requests.map(req => (
             <div key={req.from._id} className="request-card">
               <span>{req.from.name}</span>
-              <button onClick={() => respond(req.from._id, 'accepted')}>Accept</button>
-              <button onClick={() => respond(req.from._id, 'rejected')}>Reject</button>
+              <div className="btn-group">
+                <button onClick={() => respond(req.from._id, 'accepted')} className="accept">Accept</button>
+                <button onClick={() => respond(req.from._id, 'rejected')} className="reject">Reject</button>
+              </div>
             </div>
           ))
         )}
       </section>
 
-      <section>
-        <h2>Chat Partners</h2>
+      <section className="teams-section">
+        <h2>🧠 Connected Collaborators</h2>
         {partners.length === 0 ? (
-          <p>No chat partners yet.</p>
+          <p className="no-data">No ongoing collaborations yet. Start building your dream team!</p>
         ) : (
           partners.map(p => (
             <div key={p._id} className="partner-card">
               <span>{p.name}</span>
-              <button onClick={() => handleChatNavigate(p._id)}>Chat</button>
+              <button onClick={() => handleChatNavigate(p._id)}>Open Chat</button>
             </div>
           ))
         )}
