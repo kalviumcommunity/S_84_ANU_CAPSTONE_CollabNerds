@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
-import socket from '../socket'; // ✅ import socket
+import socket from '../socket';
 import "../Styles/LoginPage.css";
 
 const LoginPage = () => {
@@ -13,6 +13,14 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const API_BASE_URL = 'http://localhost:6767'; // ✅ your API base URL
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');  // If the user is already logged in, redirect to dashboard
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

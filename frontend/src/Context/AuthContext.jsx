@@ -1,28 +1,34 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+// src/Context/AuthContext.jsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Retrieve user info from localStorage or make an API call to get user details
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      setUser(storedUser);
     }
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData)); // Store user in localStorage
-    localStorage.setItem('token', userData.token); // Store token in localStorage
-    setUser(userData); // Set user in state
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData.user));
+    setUser(userData.user);
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
     localStorage.removeItem('token');
-    setUser(null); // Clear user state
+    localStorage.removeItem('user');
+    setUser(null);
   };
 
   return (
@@ -31,5 +37,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

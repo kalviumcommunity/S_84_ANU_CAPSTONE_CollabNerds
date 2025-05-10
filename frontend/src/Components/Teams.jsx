@@ -18,7 +18,7 @@ const Teams = () => {
       fetchRequests();
       fetchPartners();
     }
-  }, []);
+  }, [token]); // Re-run the effect if token changes
 
   const fetchUsers = async () => {
     try {
@@ -63,7 +63,7 @@ const Teams = () => {
         { targetUserId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchUsers();
+      fetchUsers();  // Re-fetch the users after sending the request
     } catch (err) {
       console.error('Error sending request:', err.response?.data || err.message);
     }
@@ -76,8 +76,8 @@ const Teams = () => {
         { requesterId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchRequests();
-      fetchPartners();
+      fetchRequests();  // Re-fetch the requests after responding
+      fetchPartners();  // Re-fetch partners after responding
     } catch (err) {
       console.error('Error responding to request:', err);
     }

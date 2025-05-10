@@ -9,4 +9,20 @@ router.get('/', protect, async (req, res) => {
   res.json(users);
 });
 
+router.get("/all" , async(req , res)=>{
+  const data = await User.find();
+  res.json(data);
+})
+
+router.delete("/:id" , async(req , res)=>{
+  const id = req.params.id;
+  try {
+    const data = await User.findByIdAndDelete(id);
+    res.json( { Message : "Deleted successfully !" , data : data});
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user" });
+  }
+}
+) ;
+
 module.exports = router;

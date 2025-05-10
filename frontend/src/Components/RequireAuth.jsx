@@ -1,5 +1,6 @@
+// src/Components/RequireAuth.jsx
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 
 function RequireAuth() {
@@ -7,21 +8,20 @@ function RequireAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // This ensures that the component checks localStorage and updates user state
     if (user !== null) {
       setLoading(false);
     }
   }, [user]);
 
   if (loading) {
-    return <div>Loading...</div>; // You can show a loading spinner or something similar
+    return <div>Loading...</div>;
   }
 
   if (!user) {
-    return <Navigate to="/login" />; // Redirect to login if not authenticated
+    return <Navigate to="/login" />;
   }
 
-  return <Outlet />; // Render the nested route components if authenticated
+  return <Outlet />;
 }
 
 export default RequireAuth;
