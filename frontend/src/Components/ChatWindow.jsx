@@ -13,23 +13,31 @@ const ChatWindow = () => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
 
-  // Fetch all users (once)
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get('http://localhost:6767/api/users', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsers(res.data);
-        setLoadingUsers(false);
-      } catch (err) {
-        console.error('Failed to fetch users:', err);
-      }
-    };
-    fetchUsers();
-  }, [token]);
+  // Fetch all users once
+useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get('http://localhost:6767/api/users', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Users fetched:", res.data); // Check the fetched users
+      setUsers(res.data);
+      setLoadingUsers(false);
+    } catch (err) {
+      console.error('❌ Failed to fetch users:', err);
+    }
+  };
+  fetchUsers();
+}, [token]);
+
+  // Helper to map sender ID to user object
+const normalizeSender = (senderId) => {
+  if (typeof senderId === 'object' && senderId.name) return senderId;
+  console.log("Sender ID:", senderId);
+  const user = users.find(u => u._id === senderId);
+  console.log("Found User:", user);
+  return user ? user : { _id: senderId, name: 'Unknown User' };
+};
 
   // Fetch chat messages
   useEffect(() => {
@@ -40,34 +48,43 @@ const ChatWindow = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setMessages(res.data);
+
+        const enriched = res.data.map(msg => ({
+          ...msg,
+          sender: normalizeSender(msg.sender),
+        }));
+
+        setMessages(enriched);
       } catch (err) {
-        console.error('Failed to fetch messages:', err);
+        console.error('❌ Failed to fetch messages:', err);
       }
     };
-    fetchMessages();
-  }, [partnerId, token]);
+    if (!loadingUsers) fetchMessages();
+  }, [partnerId, token, loadingUsers]);
 
-  // Socket setup
+  // Socket setup (depends on loadingUsers only, not raw users array)
   useEffect(() => {
+    if (loadingUsers) return;
+
     if (!socket.connected) socket.connect();
 
     const room = [currentUser._id, partnerId].sort().join('_');
     socket.emit('joinRoom', { room });
 
-    socket.on('connect', () => {
-      console.log('✅ Socket connected:', socket.id);
-    });
-
     socket.on('receiveMessage', (msg) => {
-      setMessages(prev => [...prev, msg]);
+      console.log('📩 Received message:', msg);
+      const enriched = {
+        ...msg,
+        sender: normalizeSender(msg.sender),
+      };
+      setMessages(prev => [...prev, enriched]);
     });
 
     return () => {
       socket.off('receiveMessage');
       socket.emit('leaveRoom', { room });
     };
-  }, [partnerId, currentUser._id]);
+  }, [partnerId, currentUser._id, loadingUsers]);
 
   const sendMessage = () => {
     if (!newMsg.trim()) return;
@@ -78,22 +95,28 @@ const ChatWindow = () => {
     };
 
     socket.emit('sendMessage', message);
-    setMessages(prev => [...prev, { sender: currentUser._id, content: newMsg }]);
-    setNewMsg('');
-  };
 
-  const getUserName = (userId) => {
-    const user = users.find(u => u._id === userId);
-    return user ? user.name : 'Unknown User';
+    const localMessage = {
+      sender: currentUser, // Already contains _id and name
+      content: newMsg,
+    };
+
+    setMessages(prev => [...prev, localMessage]);
+    setNewMsg('');
   };
 
   if (loadingUsers) {
     return <div style={{ padding: 20 }}>Loading chat...</div>;
   }
 
+  const getPartnerName = () => {
+    const partner = users.find(u => u._id === partnerId);
+    return partner ? partner.name : 'Unknown User';
+  };
+
   return (
     <div style={{ padding: 20 }}>
-      <h2>Chat with {getUserName(partnerId)}</h2>
+      <h2>Chat with {getPartnerName()}</h2>
       <div style={{
         height: 300,
         overflowY: 'auto',
@@ -102,13 +125,13 @@ const ChatWindow = () => {
         padding: '10px'
       }}>
         {messages.map((msg, i) => (
-          <div key={i} style={{
-            textAlign: msg.sender === currentUser._id ? 'right' : 'left',
-            margin: '5px 0'
-          }}>
-            <strong>{msg.sender === currentUser._id ? 'You' : getUserName(msg.sender)}:</strong> {msg.content}
-          </div>
-        ))}
+        <div key={`${msg.sender._id}-${msg.content}-${i}`} style={{
+        textAlign: msg.sender._id === currentUser._id ? 'right' : 'left',
+        margin: '5px 0'
+        }}>
+         <strong>{msg.sender._id === currentUser._id ? 'You' : msg.sender.name}:</strong> {msg.content}
+        </div>
+))}
       </div>
       <div style={{ display: 'flex', gap: '10px' }}>
         <input
@@ -116,7 +139,7 @@ const ChatWindow = () => {
           value={newMsg}
           onChange={(e) => setNewMsg(e.target.value)}
           placeholder="Type a message..."
-           style={{ width: '80%' }}
+          style={{ width: '80%' }}
         />
         <button onClick={sendMessage} style={{ width: '18%', marginLeft: '2%' }}>Send</button>
       </div>

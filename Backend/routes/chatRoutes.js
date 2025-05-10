@@ -57,21 +57,37 @@ router.post('/respond', protect, async (req, res) => {
 });
 
 // Get messages between users
+// Get messages between users
 router.get('/messages/:partnerId', protect, async (req, res) => {
   try {
     const userId = req.user.id;
     const partnerId = req.params.partnerId;
 
+    // Fetch messages between the user and partner
     const messages = await Message.find({
       $or: [
         { sender: userId, receiver: partnerId },
         { sender: partnerId, receiver: userId }
       ]
-    }).sort({ timestamp: 1 });
+    }).sort({ timestamp: 1 }).populate([
+      { path: 'sender', select: 'name email' },
+      { path: 'receiver', select: 'name email' }
+    ]);
 
+    // Format the messages with sender details
     const formatted = messages.map(msg => ({
       content: msg.content,
-      sender: msg.sender.toString() === userId ? 'me' : 'them'
+      sender: {
+        _id: msg.sender._id,
+        name: msg.sender.name,
+        email: msg.sender.email
+      },
+      receiver: {
+        _id: msg.receiver._id,
+        name: msg.receiver.name,
+        email: msg.receiver.email
+      },
+      timestamp: msg.timestamp
     }));
 
     res.json(formatted);
@@ -80,6 +96,7 @@ router.get('/messages/:partnerId', protect, async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch messages' });
   }
 });
+
 
 // Get chat partners
 router.get('/partners', protect, async (req, res) => {
