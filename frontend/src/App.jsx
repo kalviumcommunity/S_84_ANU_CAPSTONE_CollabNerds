@@ -11,7 +11,7 @@ import PrivateRoute from './Components/PrivateRoute'; // Import PrivateRoute
 import Dashboard from './Components/Dashboard';
 import Teams from './Components/Teams';
 import ChatWindow from './Components/ChatWindow';
-
+import ProfilePage from './pages/ProfilePage';
 function App() {
   return (
     <AuthProvider>
@@ -40,6 +40,13 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path ="/profile"
+           element={
+              <PrivateRoute>
+                <ProfilePage/>
+              </PrivateRoute>
+            }
+            />
           <Route
             path="/chat/:partnerId"
             element={
