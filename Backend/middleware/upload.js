@@ -1,9 +1,16 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure folder exists
+const uploadPath = 'uploads/profile_images/';
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/profile_images/');
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -14,8 +21,8 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!['.jpg', '.jpeg', '.png', '.heic'].includes(ext)) {
       return cb(new Error('Only images are allowed'), false);
     }
     cb(null, true);
