@@ -15,9 +15,9 @@ import ProfilePage from './pages/ProfilePage';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Navbar />
+      {/* <Router> */}
         <MagicCursorTrail />
-        <Navbar />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<FrontPage />} />
@@ -56,7 +56,7 @@ function App() {
             }
           />
         </Routes>
-      </Router>
+      {/* </Router> */}
     </AuthProvider>
   );
 }

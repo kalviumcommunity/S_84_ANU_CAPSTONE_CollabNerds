@@ -7,16 +7,17 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-          <div className="logo-spinner"></div>
-          <h1>CollabNerds</h1></div>
-          <div className="navbar-nav">
-          <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="#">Projects</a></li>
-              <li><a href="/teams">Teams</a></li>
-              <li><a href="/dashboard">Dashboard</a></li>
-              <li><a href="/profile">Profile</a></li>
-          </ul>
+        <div className="logo-spinner"></div>
+        <h1>CollabNerds</h1>
+      </div>
+      <div className="navbar-nav">
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/projects">Projects</Link></li>
+          <li><Link to="/teams">Teams</Link></li>
+          <li><Link to="/dashboard">Dashboard</Link></li>
+          <li><Link to="/profile">Profile</Link></li>
+        </ul>
       </div>
     </nav>
   );
