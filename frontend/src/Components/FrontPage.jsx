@@ -29,57 +29,68 @@ const FrontPage = () => {
   return (
     <div className="frontpage-container">
       {/* Hero Section */}
-      <header className="hero hidden">
-        <div className="globe-overlay">
-          <AnimatedGlobe />
-        </div>
-        <div className="hero-content">
-          <motion.h1
-            className="hero-title"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.15
-                }
-              }
-            }}
-          >
-            {"Find Your Perfect Team for Innovation".split(" ").map((word, index) => (
-              <motion.span
-                key={index}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                style={{ display: "inline-block", marginRight: "8px" }}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </motion.h1>
-          <p className="subtitle">
-            CollabNerds connects students with brilliant ideas to talented collaborators. Pitch your project, build your team, and bring your vision to life.
-          </p>
+      {/* Hero Section */}
+<header className="hero hidden">
+  <div className="globe-overlay">
+    <AnimatedGlobe />
+  </div>
+  <div className="hero-content">
+    <motion.h1
+      className="hero-title"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: {
+          transition: { staggerChildren: 0.15 }
+        }
+      }}
+    >
+      {"Unite. Create.".split(" ").map((word, index) => (
+        <motion.span
+          key={index}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+          }}
+          style={{ display: "inline-block", marginRight: "8px" }}
+        >
+          {word}
+        </motion.span>
+      ))}
+      <motion.span
+        className="transform-text"
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          visible: { opacity: 1, y: 0 }
+        }}
+        style={{ display: "inline-block", marginLeft: "8px" }}
+      >
+        Transform.
+      </motion.span>
+    </motion.h1>
+    <p className="subtitle upgraded-subtitle">
+      Build extraordinary ideas with extraordinary people.<br />
+      Join <strong>CollabNerds</strong> — pitch your vision, team up with innovators, and shape the future together.
+    </p>
 
-          <div className="cta-buttons">
-            <button className="primary-button hover-scale" onClick={handleGetStarted}>
-              Get Started
-              <span className="button-glow"></span>
-            </button>
-            <button className="secondary-button hover-scale">
-              Explore Projects
-              <span className="button-glow"></span>
-            </button>
-          </div>
-        </div>
+    <div className="cta-buttons">
+      <button className="primary-button hover-scale" onClick={handleGetStarted}>
+        Get Started
+        <span className="button-glow"></span>
+      </button>
+      <button className="secondary-button hover-scale">
+        Explore Projects
+        <span className="button-glow"></span>
+      </button>
+    </div>
+  </div>
 
-        <div className="hero-deco">
-          <div className="deco-orb purple"></div>
-          <div className="deco-orb blue"></div>
-        </div>
-      </header>
+  <div className="hero-deco">
+    <div className="deco-orb purple"></div>
+    <div className="deco-orb blue"></div>
+  </div>
+</header>
+
 
       {/* Innovation Section */}
       <section className="innovation-section hidden">
