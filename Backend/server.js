@@ -12,7 +12,8 @@ const authRoutes = require('./routes/auth') ;
 const chatRoutes = require('./routes/chatRoutes') ;
 const userRoutes = require('./routes/userRoutes') ;
 const Message = require('./models/Message') ; 
-
+const profileRoutes = require('./routes/profileRoutes');
+const path = require('path');
 const app = express();
 
 // === CORS Setup ===
@@ -33,6 +34,8 @@ app.use(cors({
 app.use(express.json());
 
 // === Routes ===
+app.use('/api/profile', profileRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/auth', authRoutes);
