@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  // Use the environment variable from .env file for dynamic base URL
-  baseURL: import.meta.env.VITE_API_BASE_URL, 
-  withCredentials: true
+  baseURL: 'https://s-84-anu-capstone-collabnerds-3.onrender.com', // ✅ Hardcoded base URL
+  withCredentials: true,
 });
 
 instance.interceptors.request.use((config) => {

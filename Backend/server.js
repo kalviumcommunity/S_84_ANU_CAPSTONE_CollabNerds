@@ -17,7 +17,7 @@ const path = require('path');
 const app = express();
 
 // === CORS Setup ===
-const allowedOrigins = ['http://localhost:5173' , 'poetic-sunflower-e1c252.netlify.app'];
+const allowedOrigins = ['http://localhost:5173' , 'https://poetic-sunflower-e1c252.netlify.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
