@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:6767', // or 3000 or whatever your backend runs on
+        target: 'https://s-84-anu-capstone-collabnerds-3.onrender.com', // or 3000 or whatever your backend runs on
         changeOrigin: true,
         secure: false,
       },
