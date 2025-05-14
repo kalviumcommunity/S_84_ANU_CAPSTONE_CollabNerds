@@ -90,13 +90,14 @@ const ProfilePage = () => {
         <div className="profile-column avatar-column">
           <img
             src={
-              profile.profileImage
-                ? `https://s-84-anu-capstone-collabnerds-3.onrender.com${profile.profileImage}`
-                : defaultAvatar
-            }
-            alt="profile"
-            className="avatar"
-          />
+            profile.profileImage
+              ? `${import.meta.env.VITE_BACKEND_URL}/${profile.profileImage?.startsWith('/') ? profile.profileImage.slice(1) : profile.profileImage}`
+
+              : defaultAvatar
+          }
+          alt="profile"
+          className="avatar"
+            />
           <input
             type="file"
             accept="image/*"
@@ -154,7 +155,7 @@ const ProfilePage = () => {
           <div className="form-group">
             <label>Social Links</label>
             <div className="social-links-container">
-              {profile.socialLinks.split(',').map((link, index) => (
+              {(profile.socialLinks ? profile.socialLinks.split(',') : []).map((link, index) => (
                 <input
                   key={index}
                   value={link}
