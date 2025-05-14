@@ -43,7 +43,7 @@ const ProfilePage = () => {
     } catch (err) {
       console.error(err);
     }
-  };
+  } ; 
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });

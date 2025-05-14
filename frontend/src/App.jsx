@@ -17,7 +17,7 @@ function App() {
     <AuthProvider>
       <Navbar />
       {/* <Router> */}
-        <MagicCursorTrail />
+        <MagicCursorTrail  />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<FrontPage />} />
