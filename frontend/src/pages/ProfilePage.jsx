@@ -1,3 +1,4 @@
+// ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
@@ -13,7 +14,7 @@ const ProfilePage = () => {
     location: '',
     bio: '',
     skills: '',
-    socialLinks: '',
+    socialLinks: [],
     profileImage: '',
     dob: null,
   });
@@ -28,12 +29,16 @@ const ProfilePage = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile', {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setProfile({
         ...res.data,
         dob: res.data.dob ? new Date(res.data.dob) : null,
+        socialLinks: Array.isArray(res.data.socialLinks)
+          ? res.data.socialLinks
+          : (res.data.socialLinks || '').split(',').filter((link) => link),
       });
     } catch (err) {
       console.error(err);
@@ -47,9 +52,16 @@ const ProfilePage = () => {
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      await axios.put('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile', profile, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/profile`,
+        {
+          ...profile,
+          socialLinks: profile.socialLinks.join(','),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       alert('Profile updated!');
     } catch (err) {
       console.error(err);
@@ -61,11 +73,13 @@ const ProfilePage = () => {
 
   const handleImageUpload = async () => {
     if (!imageFile) return;
+
     const formData = new FormData();
     formData.append('image', imageFile);
+
     try {
       const res = await axios.post(
-        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile/upload-photo',
+        `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`,
         formData,
         {
           headers: {
@@ -75,6 +89,7 @@ const ProfilePage = () => {
         }
       );
       setProfile({ ...profile, profileImage: res.data.profileImage });
+      setImageFile(null); // Reset selected image
       alert('Image uploaded!');
     } catch (err) {
       console.error(err);
@@ -82,33 +97,52 @@ const ProfilePage = () => {
     }
   };
 
+  const handleDeleteImage = () => {
+    setProfile({ ...profile, profileImage: '' });
+  };
+
+  const handleDeleteSocialLink = (index) => {
+    const updatedLinks = [...profile.socialLinks];
+    updatedLinks.splice(index, 1);
+    setProfile({ ...profile, socialLinks: updatedLinks });
+  };
+
+  const imageURL = profile.profileImage
+    ? `${import.meta.env.VITE_API_BASE_URL}/${profile.profileImage.startsWith('/')
+        ? profile.profileImage.slice(1)
+        : profile.profileImage}`
+    : defaultAvatar;
+
   return (
     <div className="profile-page">
       <div className="profile-container">
-
         {/* Avatar Column */}
         <div className="profile-column avatar-column">
           <img
-            src={
-            profile.profileImage
-              ? `${import.meta.env.VITE_BACKEND_URL}/${profile.profileImage?.startsWith('/') ? profile.profileImage.slice(1) : profile.profileImage}`
-
-              : defaultAvatar
-          }
-          alt="profile"
-          className="avatar"
-            />
+            src={imageFile ? URL.createObjectURL(imageFile) : imageURL}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = defaultAvatar;
+            }}
+            alt="profile"
+            className="avatar"
+          />
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
           />
           <button onClick={handleImageUpload}>Upload Photo</button>
+          {profile.profileImage && !imageFile && (
+            <button onClick={handleDeleteImage} className="delete-image-btn">
+              Delete Image
+            </button>
+          )}
         </div>
 
         {/* Bio Column */}
         <div className="profile-column bio-column">
-          <h3 style={{ color: '#f0f0f0' }}>👤 Bio & Info</h3>
+          <h3>👤 Bio & Info</h3>
           <div className="form-group">
             <label>Name</label>
             <input name="name" value={profile.name} onChange={handleChange} />
@@ -147,7 +181,7 @@ const ProfilePage = () => {
 
         {/* Skills & Links Column */}
         <div className="profile-column skills-column">
-          <h3 style={{ color: '#f0f0f0' }}>⚙️ Skills & Links</h3>
+          <h3>⚙️ Skills & Links</h3>
           <div className="form-group">
             <label>Skills</label>
             <input name="skills" value={profile.skills} onChange={handleChange} />
@@ -155,27 +189,27 @@ const ProfilePage = () => {
           <div className="form-group">
             <label>Social Links</label>
             <div className="social-links-container">
-              {(profile.socialLinks ? profile.socialLinks.split(',') : []).map((link, index) => (
-                <input
-                  key={index}
-                  value={link}
-                  onChange={(e) => {
-                    const links = profile.socialLinks.split(',');
-                    links[index] = e.target.value;
-                    setProfile({ ...profile, socialLinks: links.join(',') });
-                  }}
-                  placeholder={`Link ${index + 1}`}
-                />
+              {profile.socialLinks.map((link, index) => (
+                <div key={index} className="social-link-item">
+                  <input
+                    value={link}
+                    onChange={(e) => {
+                      const links = [...profile.socialLinks];
+                      links[index] = e.target.value;
+                      setProfile({ ...profile, socialLinks: links });
+                    }}
+                    placeholder={`Link ${index + 1}`}
+                  />
+                  <button
+                    className="delete-link-btn"
+                    onClick={() => handleDeleteSocialLink(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
               ))}
               <button
-                onClick={() =>
-                  setProfile({
-                    ...profile,
-                    socialLinks: profile.socialLinks
-                      ? `${profile.socialLinks},`
-                      : ',',
-                  })
-                }
+                onClick={() => setProfile({ ...profile, socialLinks: [...profile.socialLinks, ''] })}
               >
                 + Add Link
               </button>
