@@ -27,7 +27,7 @@ const Teams = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:6767/api/users', {
+      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/users', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const filtered = res.data.filter(
@@ -41,7 +41,7 @@ const Teams = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:6767/api/chat/requests', {
+      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/requests', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRequests(res.data);
@@ -52,7 +52,7 @@ const Teams = () => {
 
 const fetchPartners = async () => {
   try {
-    const res = await axios.get('http://localhost:6767/api/chat/partners', {
+    const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/partners', {
       headers: { Authorization: `Bearer ${token}` },
     });
     // Filter out duplicates by checking if the partner already exists
@@ -67,7 +67,7 @@ const fetchPartners = async () => {
   const sendRequest = async (id) => {
     try {
       await axios.post(
-        'http://localhost:6767/api/chat/request',
+        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/request',
         { targetUserId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -80,7 +80,7 @@ const fetchPartners = async () => {
   const respond = async (requesterId, action) => {
     try {
       await axios.post(
-        'http://localhost:6767/api/chat/respond',
+        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/respond',
         { requesterId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );

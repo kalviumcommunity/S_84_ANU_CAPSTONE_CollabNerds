@@ -28,7 +28,7 @@ const ProfilePage = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get('http://localhost:6767/api/profile', {
+      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfile({
@@ -47,7 +47,7 @@ const ProfilePage = () => {
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      await axios.put('http://localhost:6767/api/profile', profile, {
+      await axios.put('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile', profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert('Profile updated!');
@@ -65,7 +65,7 @@ const ProfilePage = () => {
     formData.append('image', imageFile);
     try {
       const res = await axios.post(
-        'http://localhost:6767/api/profile/upload-photo',
+        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile/upload-photo',
         formData,
         {
           headers: {
@@ -91,7 +91,7 @@ const ProfilePage = () => {
           <img
             src={
               profile.profileImage
-                ? `http://localhost:6767${profile.profileImage}`
+                ? `https://s-84-anu-capstone-collabnerds-3.onrender.com${profile.profileImage}`
                 : defaultAvatar
             }
             alt="profile"

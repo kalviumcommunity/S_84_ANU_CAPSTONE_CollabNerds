@@ -24,12 +24,12 @@ const ChatWindow = () => {
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
-
+  
   // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('http://localhost:6767/api/users', {
+        const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data);
@@ -52,7 +52,7 @@ const ChatWindow = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:6767/api/chat/messages/${partnerId}`, {
+        const res = await axios.get(`https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/messages/${partnerId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
