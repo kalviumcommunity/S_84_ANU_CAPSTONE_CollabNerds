@@ -1,0 +1,21 @@
+meta {
+  name: update
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:6767/api/projects/6827049ee7886366bb603ae4
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjZmZjQ3ZTc4ODYzNjZiYjYwM2FkZiIsImlhdCI6MTc0NzM4NjIwMywiZXhwIjoxNzQ3NDcyNjAzfQ.f0pHjInoWpkZLlhyKZCcM0jY5VrBfx_6ZLRNsJvdQx4
+}
+
+body:json {
+  {
+     "name" : "abababb", "description" : "cd", "techStack" : "ef"
+  }
+}

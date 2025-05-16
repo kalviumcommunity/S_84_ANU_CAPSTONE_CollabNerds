@@ -1,0 +1,24 @@
+meta {
+  name: schedule
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:6767/api/meetings
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjZmZjQ3ZTc4ODYzNjZiYjYwM2FkZiIsImlhdCI6MTc0NzM4NjIwMywiZXhwIjoxNzQ3NDcyNjAzfQ.f0pHjInoWpkZLlhyKZCcM0jY5VrBfx_6ZLRNsJvdQx4
+}
+
+body:json {
+  {
+    "title": "Project Sync-Up",
+    "description": "Discussion on project progress and blockers",
+    "scheduledFor": "2025-05-20T14:00:00.000Z"
+  }
+  
+}
