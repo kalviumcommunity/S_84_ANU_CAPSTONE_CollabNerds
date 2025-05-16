@@ -1,0 +1,15 @@
+meta {
+  name: allProjects
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:6767/api/projects/my-projects
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearere eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjZmZjQ3ZTc4ODYzNjZiYjYwM2FkZiIsImlhdCI6MTc0NzM4NjIwMywiZXhwIjoxNzQ3NDcyNjAzfQ.f0pHjInoWpkZLlhyKZCcM0jY5VrBfx_6ZLRNsJvdQx4
+}
