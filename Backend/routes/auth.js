@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
     if (!user) return res.status(400).json({ message: 'User must signup first.' });
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1hr' });
     res.json({ token, user: { id: user._id, name: user.name } });
   } catch (err) {
     res.status(500).json({ message: 'Login failed' });
