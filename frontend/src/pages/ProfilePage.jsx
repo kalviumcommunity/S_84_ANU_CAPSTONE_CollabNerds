@@ -27,33 +27,23 @@ const ProfilePage = () => {
     fetchProfile();
   }, []);
 
-const fetchProfile = async () => {
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const userData = res.data;
-
-        setProfile({
-          name: userData.name || '',
-          email: userData.email || '',
-          bio: userData.bio || '',
-          skills: userData.skills || '',
-          socialLinks: Array.isArray(userData.socialLinks)
-            ? userData.socialLinks
-            : (userData.socialLinks || '').split(','),
-          dob: userData.dob ? new Date(userData.dob).toISOString().split('T')[0] : '',
-          location: userData.location || '',
-          role: userData.role || '',
-          profileImage: userData.profileImage || '',
-        });
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      }
-    };
-
- 
+      setProfile({
+        ...res.data,
+        dob: res.data.dob ? new Date(res.data.dob) : null,
+        socialLinks: Array.isArray(res.data.socialLinks)
+          ? res.data.socialLinks
+          : (res.data.socialLinks || '').split(',').filter((link) => link),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  } ; 
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -63,21 +53,15 @@ const fetchProfile = async () => {
     setLoading(true);
     try {
       await axios.put(
-      `${import.meta.env.VITE_API_BASE_URL}/api/profile`,
-      {
-        name: profile.name,
-        bio: profile.bio,
-        skills: profile.skills,
-        socialLinks: profile.socialLinks.join(','),
-        dob: profile.dob,
-        location: profile.location,
-        role: profile.role,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
+        `${import.meta.env.VITE_API_BASE_URL}/api/profile`,
+        {
+          ...profile,
+          socialLinks: profile.socialLinks.join(','),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       alert('Profile updated!');
     } catch (err) {
       console.error(err);
@@ -169,21 +153,11 @@ const fetchProfile = async () => {
           </div>
           <div className="form-group">
             <label>Role</label>
-            <input
-                type="text"
-                name="role"
-                value={profile.role}
-                onChange={(e) => setProfile({ ...profile, role: e.target.value })}
-                />
+            <input name="role" value={profile.role} onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Location</label>
-            <input
-                type="text"
-                name="location"
-                value={profile.location}
-                onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-              />
+            <input name="location" value={profile.location} onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Bio</label>
