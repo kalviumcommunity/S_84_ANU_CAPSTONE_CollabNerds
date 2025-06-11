@@ -16,8 +16,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <Sidebar onTabChange={setActiveTab} activeTab={activeTab} />
-      <div className="dashboard-main">
-        {/* <h2 className="section-title">My Projects</h2> */}
+      <div className="dashboard-main"> 
         <div className="projects-section">
           {renderContent()}
         </div>

@@ -7,7 +7,6 @@ import Navbar from './Components/Navbar';
 import MagicCursorTrail from './Components/MagicCursorTrail';
 import { AuthProvider } from './Context/AuthContext';
 import PrivateRoute from './Components/PrivateRoute'; // Import PrivateRoute
-
 import Dashboard from './Components/Dashboard';
 import Teams from './Components/Teams';
 import ChatWindow from './Components/ChatWindow';
