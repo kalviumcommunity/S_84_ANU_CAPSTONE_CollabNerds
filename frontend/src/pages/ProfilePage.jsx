@@ -145,7 +145,7 @@ const ProfilePage = () => {
           <h3>👤 Bio & Info</h3>
           <div className="form-group">
             <label>Name</label>
-            <input name="name" value={profile.name } onChange={handleChange} />
+            <input name="name" value={profile.name} onChange={handleChange} />
           </div>
           <div className="form-group">
             <label>Email</label>
