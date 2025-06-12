@@ -1,6 +1,7 @@
 import React from 'react';
-import "../Styles/Sidebar.css"
-const Sidebar = ({ onTabChange, activeTab }) => {
+import "../Styles/Sidebar.css";
+
+const Sidebar = ({ onTabChange, activeTab, handleLogout }) => {
   return (
     <div className="custom-sidebar">
       <h2 style={{ marginBottom: '2rem' }}>CollabNerds</h2>
@@ -16,6 +17,23 @@ const Sidebar = ({ onTabChange, activeTab }) => {
           style={activeTab === 'meetings' ? styles.active : styles.button}
         >
           Schedule Meeting
+        </button>
+        <button
+          onClick={() => onTabChange('chatbuddy')}
+          style={activeTab === 'chatbuddy' ? styles.active : styles.button}
+        >
+          ChatBuddy 🤖
+        </button>
+        <button
+          onClick={handleLogout}
+          style={{
+            ...styles.button,
+            color: '#ff6666',
+            fontWeight: 'bold',
+            marginTop: '2rem',
+          }}
+        >
+          Logout
         </button>
       </div>
     </div>
@@ -33,6 +51,7 @@ const styles = {
     textAlign: 'left',
     cursor: 'pointer',
     marginBottom: '0.5rem',
+    transition: 'all 0.3s ease',
   },
   active: {
     display: 'block',
