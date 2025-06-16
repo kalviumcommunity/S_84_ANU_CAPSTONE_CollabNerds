@@ -106,6 +106,51 @@
   transition: transform 0.3s;
 }
 
+.social-link-item {
+  margin-bottom: 8px;
+}
+
+.social-link-item.edit-mode {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.social-link-text {
+  color: #f4f4f6;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.social-link-text:hover {
+  color: #364fc7;
+}
+
+.edit-toggle-btn {
+  margin-top: 10px;
+  background-color: #4c6ef5;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-toggle-btn:hover {
+  background-color: #364fc7;
+}
+
+.delete-link-btn {
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
 .avatar:hover {
   transform: scale(1.05);
 }

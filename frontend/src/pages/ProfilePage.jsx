@@ -1,4 +1,3 @@
-// ProfilePage.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
@@ -21,6 +20,7 @@ const ProfilePage = () => {
 
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isEditingLinks, setIsEditingLinks] = useState(false); // 🔄 Added toggle for social links
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const ProfilePage = () => {
     } catch (err) {
       console.error(err);
     }
-  } ; 
+  };
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -89,7 +89,7 @@ const ProfilePage = () => {
         }
       );
       setProfile({ ...profile, profileImage: res.data.profileImage });
-      setImageFile(null); // Reset selected image
+      setImageFile(null);
       alert('Image uploaded!');
     } catch (err) {
       console.error(err);
@@ -186,35 +186,71 @@ const ProfilePage = () => {
             <label>Skills</label>
             <input name="skills" value={profile.skills} onChange={handleChange} />
           </div>
+
+          {/* 🔄 Updated Social Links Section */}
           <div className="form-group">
             <label>Social Links</label>
             <div className="social-links-container">
-              {profile.socialLinks.map((link, index) => (
-                <div key={index} className="social-link-item">
-                  <input
-                    value={link}
-                    onChange={(e) => {
-                      const links = [...profile.socialLinks];
-                      links[index] = e.target.value;
-                      setProfile({ ...profile, socialLinks: links });
-                    }}
-                    placeholder={`Link ${index + 1}`}
-                  />
+              {!isEditingLinks ? (
+                <>
+                  {profile.socialLinks.length > 0 ? (
+                    profile.socialLinks.map((link, index) => (
+                      <div key={index} className="social-link-item">
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="social-link-text"
+                        >
+                          🔗 {link}
+                        </a>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: '#888' }}>
+                      No social links added
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
+                  {profile.socialLinks.map((link, index) => (
+                    <div key={index} className="social-link-item edit-mode">
+                      <input
+                        value={link}
+                        onChange={(e) => {
+                          const links = [...profile.socialLinks];
+                          links[index] = e.target.value;
+                          setProfile({ ...profile, socialLinks: links });
+                        }}
+                        placeholder={`Link ${index + 1}`}
+                      />
+                      <button
+                        className="delete-link-btn"
+                        onClick={() => handleDeleteSocialLink(index)}
+                      >
+                        ❌
+                      </button>
+                    </div>
+                  ))}
                   <button
-                    className="delete-link-btn"
-                    onClick={() => handleDeleteSocialLink(index)}
+                    onClick={() =>
+                      setProfile({ ...profile, socialLinks: [...profile.socialLinks, ''] })
+                    }
                   >
-                    Delete
+                    ➕ Add New Link
                   </button>
-                </div>
-              ))}
+                </>
+              )}
               <button
-                onClick={() => setProfile({ ...profile, socialLinks: [...profile.socialLinks, ''] })}
+                onClick={() => setIsEditingLinks(!isEditingLinks)}
+                className="edit-toggle-btn"
               >
-                + Add Link
+                {isEditingLinks ? '✅ Done' : '✏️ Edit Links'}
               </button>
             </div>
           </div>
+
           <button onClick={handleUpdate} disabled={loading}>
             {loading ? 'Updating...' : 'Update Profile'}
           </button>
