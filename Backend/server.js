@@ -1,55 +1,57 @@
 require('dotenv').config(); // Load environment variables
-const express = require('express') ;
-const mongoose = require('mongoose') ;
-const jwt = require('jsonwebtoken') ;
-const cors = require('cors') ;
-const http = require('http') ;
-const { Server } = require('socket.io') ;
 
-const projectRoutes = require('./routes/projectRoutes') ;
-const meetingRoutes = require('./routes/meetingRoutes') ;
-const authRoutes = require('./routes/auth') ;
-const chatRoutes = require('./routes/chatRoutes') ;
-const userRoutes = require('./routes/userRoutes') ;
-const Message = require('./models/Message') ; 
-const profileRoutes = require('./routes/profileRoutes');
+const express = require('express');
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
 const path = require('path');
+
+const projectRoutes = require('./routes/projectRoutes');
+const meetingRoutes = require('./routes/meetingRoutes');
+const authRoutes = require('./routes/auth');
+const chatRoutes = require('./routes/chatRoutes');
+const userRoutes = require('./routes/userRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const Message = require('./models/Message');
+
 const app = express();
 
-// === CORS Setup ===
-const allowedOrigins = ['http://localhost:5173' , 'https://willowy-queijadas-8ec527.netlify.app'];
+// === CORS Configuration ===
+const allowedOrigins = ['http://localhost:5173', 'https://willowy-queijadas-8ec527.netlify.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS')) ;
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],   
-  allowedHeaders: ['Content-Type', 'Authorization'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
 // === Middleware ===
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// === Routes ===
-app.use('/api/profile', profileRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+// === API Routes ===
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chat', chatRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/meetings', meetingRoutes);
 
 // === MongoDB Connection ===
 const MONGO_URI = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URI )
-.then(() => console.log("✅ MongoDB connected!"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected!'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // === Create HTTP Server ===
 const server = http.createServer(app);
@@ -57,17 +59,19 @@ const server = http.createServer(app);
 // === Socket.IO Setup ===
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173' , 'https://willowy-queijadas-8ec527.netlify.app'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true
   }
 });
 
+// Socket.IO Authentication Middleware
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) {
-    return next(new Error("Authentication error: No token"));
+    return next(new Error("Authentication error: No token provided"));
   }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     socket.userId = decoded.id;
@@ -77,13 +81,14 @@ io.use((socket, next) => {
   }
 });
 
+// Socket.IO Events
 io.on('connection', (socket) => {
   console.log(`✅ User connected with ID: ${socket.userId}`);
 
-  // Join user to their own room (so we can emit to them using their userId)
+  // Join personal room for direct communication
   socket.join(socket.userId);
 
-  // Handle chat messages
+  // Handle chat message sending
   socket.on('sendMessage', async ({ content, to }) => {
     try {
       const message = new Message({
@@ -93,10 +98,10 @@ io.on('connection', (socket) => {
       });
       await message.save();
 
-      // Create a room name for communication between users
+      // Construct unique room name
       const room = [socket.userId, to].sort().join('_');
-      
-      // Emit to both users via their individual rooms
+
+      // Emit message to both users
       io.to(room).emit('receiveMessage', {
         content,
         sender: socket.userId
@@ -110,7 +115,6 @@ io.on('connection', (socket) => {
     console.log(`❌ User disconnected: ${socket.userId}`);
   });
 });
-
 
 // === Global Error Handler ===
 app.use((err, req, res, next) => {

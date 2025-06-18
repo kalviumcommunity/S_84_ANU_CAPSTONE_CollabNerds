@@ -2,7 +2,7 @@
 
 ## 🎓 Project Description
 
-🔗 Live in Action : [CollabNerds](https://poetic-sunflower-e1c252.netlify.app)
+🔗 Live in Action : [CollabNerds](https://willowy-queijadas-8ec527.netlify.app)
 
 *CollabNerds* is a collaborative MERN-based platform designed to empower students to pitch their ideas and find ideal collaborators. With seamless project posting, team management, and communication tools, students can connect based on skills, goals, and interests — making innovation a team sport.
 
