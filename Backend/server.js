@@ -17,7 +17,7 @@ const path = require('path');
 const app = express();
 
 // === CORS Setup ===
-const allowedOrigins = ['http://localhost:5173' , 'https://willowy-queijadas-8ec527.netlify.app/'];
+const allowedOrigins = ['http://localhost:5173' , 'https://willowy-queijadas-8ec527.netlify.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
