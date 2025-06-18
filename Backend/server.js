@@ -57,7 +57,7 @@ const server = http.createServer(app);
 // === Socket.IO Setup ===
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173' , 'poetic-sunflower-e1c252.netlify.app'],
+    origin: ['http://localhost:5173' , 'https://willowy-queijadas-8ec527.netlify.app'],
     methods: ['GET', 'POST'],
     credentials: true
   }
