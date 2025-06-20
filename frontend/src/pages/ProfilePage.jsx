@@ -92,31 +92,46 @@ const ProfilePage = () => {
     }
   };
 
-  const handleImageUpload = async () => {
-    if (!imageFile) return;
+ const handleImageUpload = async () => {
+  if (!imageFile) {
+    alert('Please select an image first.');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('image', imageFile);
+  if (!token) {
+    alert('User is not authenticated.');
+    return;
+  }
 
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert('Image uploaded!');
+  const formData = new FormData();
+  formData.append('image', imageFile);
+
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // DO NOT manually set Content-Type to multipart/form-data when using FormData
+        },
+      }
+    );
+
+    if (res.data?.profileImage) {
+      alert('✅ Image uploaded!');
       setImageFile(null);
       await fetchProfile();
-    } catch (err) {
-      console.error(err);
-      alert('Upload failed');
+    } else {
+      console.warn('Upload succeeded but no image returned:', res.data);
+      alert('Image upload response was invalid.');
     }
-  };
+  } catch (err) {
+    console.error('❌ Upload failed:', err.response?.data || err.message || err);
+    alert(err.response?.data?.error || 'Upload failed. Try again.');
+  }
+};
+
 
   const handleDeleteImage = async () => {
     try {
@@ -132,7 +147,7 @@ const ProfilePage = () => {
   };
 
   const imageURL = profile.profileImage
-    ? `${import.meta.env.VITE_API_BASE_URL}/${profile.profileImage.replace(/^\/+/g, '')}`
+    ? `${import.meta.env.VITE_API_BASE_URL}${profile.profileImage}`
     : defaultAvatar;
 
   return (
@@ -154,7 +169,11 @@ const ProfilePage = () => {
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
           />
-          <button onClick={handleImageUpload}>Upload Photo</button>
+
+          {imageFile && (
+            <button onClick={handleImageUpload}>Upload Photo</button>
+          )}
+
           {profile.profileImage && !imageFile && (
             <button onClick={handleDeleteImage} className="delete-image-btn">
               Delete Image
@@ -168,12 +187,21 @@ const ProfilePage = () => {
           {['name', 'email', 'role', 'location'].map((field) => (
             <div key={field} className="form-group">
               <label>{field[0].toUpperCase() + field.slice(1)}</label>
-              <input name={field} value={profile[field]} onChange={handleChange} />
+              <input
+                name={field}
+                value={profile[field] || ''}
+                onChange={handleChange}
+              />
             </div>
           ))}
           <div className="form-group">
             <label>Bio</label>
-            <textarea name="bio" rows={3} value={profile.bio} onChange={handleChange} />
+            <textarea
+              name="bio"
+              rows={3}
+              value={profile.bio || ''}
+              onChange={handleChange}
+            />
           </div>
           <div className="form-group">
             <label>DOB</label>
@@ -196,7 +224,11 @@ const ProfilePage = () => {
           <h3>⚙️ Skills & Links</h3>
           <div className="form-group">
             <label>Skills</label>
-            <input name="skills" value={profile.skills} onChange={handleChange} />
+            <input
+              name="skills"
+              value={profile.skills || ''}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="form-group">
@@ -220,7 +252,12 @@ const ProfilePage = () => {
                   {Object.entries(profile.socialLinks).map(([key, value]) =>
                     value ? (
                       <div key={key} className="social-link-item">
-                        <a href={value} target="_blank" rel="noreferrer">
+                        <a
+                          href={value}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: 'white', textDecoration: 'none' }}
+                        >
                           🔗 {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
                         </a>
                       </div>

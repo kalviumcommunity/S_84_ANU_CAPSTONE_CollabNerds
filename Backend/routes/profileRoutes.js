@@ -58,32 +58,29 @@ router.put('/', protect, async (req, res) => {
   }
 });
 
-// ✅ Upload photo
+// ✅ Upload photo - saves to disk and stores path
 router.post('/upload-photo', protect, upload.single('image'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-  const imagePath = `/uploads/profile_images/${req.file.filename}`;
-
   try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    console.log('💡 File received:', req.file.originalname);
+    console.log('💡 User ID:', req.user?.id);
+
     const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-    // Remove old image from disk
-    if (user.profileImage) {
-      const oldPath = path.join(__dirname, '..', user.profileImage);
-      fs.unlink(oldPath, err => {
-        if (err) console.warn('⚠️ Failed to delete old image:', err.message);
-      });
-    }
-
-    user.profileImage = imagePath;
+    const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    user.profileImage = base64Image;
     await user.save();
 
-    res.json({ message: 'Image uploaded', profileImage: imagePath });
+    res.json({ message: 'Image uploaded', profileImage: base64Image });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Upload failed' });
+    console.error('❌ Upload error:', err); // Print full stack trace
+    res.status(500).json({ error: 'Upload failed', details: err.message });
   }
 });
+
+
 
 // ✅ Delete photo
 router.delete('/delete-photo', protect, async (req, res) => {
@@ -103,7 +100,7 @@ router.delete('/delete-photo', protect, async (req, res) => {
 
     res.json({ message: 'Image deleted successfully' });
   } catch (err) {
-    console.error(err);
+    console.error('Delete error:', err);
     res.status(500).json({ error: 'Delete failed' });
   }
 });

@@ -101,7 +101,7 @@ const FrontPage = () => {
               <div className="innovation-card hover-float" key={index}>
                 <div className="card-icon">{icon}</div>
                 <h3>{['Project Pitching', 'Team Management', 'Built-in Communication'][index]}</h3>
-                <p>{[
+                <p style={{ color: 'white' }} >{[
                   'Share your idea with goals, description & required skills to attract the perfect team.',
                   'Accept or decline contributor requests and manage team roles efficiently.',
                   'Chat with team members and schedule meetings using our integrated tools.'
@@ -121,22 +121,22 @@ const FrontPage = () => {
             <div className="step-card">
               <div className="step-number">1</div>
               <h3>Create Account</h3>
-              <p>Sign up with email or Google in seconds</p>
+              <p style={{ color: 'white' }}>Sign up with email or Google in seconds</p>
             </div>
             <div className="step-card">
               <div className="step-number">2</div>
               <h3>Pitch Your Idea</h3>
-              <p>Share project details and required skills</p>
+              <p style={{ color: 'white' }}>Share project details and required skills</p>
             </div>
             <div className="step-card">
               <div className="step-number">3</div>
               <h3>Build Your Team</h3>
-              <p>Review and accept contributor requests</p>
+              <p style={{ color: 'white' }}>Review and accept contributor requests</p>
             </div>
             <div className="step-card">
               <div className="step-number">4</div>
               <h3>Collaborate</h3>
-              <p>Use built-in tools to bring your idea to life</p>
+              <p style={{ color: 'white' }}>Use built-in tools to bring your idea to life</p>
             </div>
           </div>
         </div>

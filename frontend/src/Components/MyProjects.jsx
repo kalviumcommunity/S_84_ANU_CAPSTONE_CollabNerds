@@ -182,7 +182,7 @@ const renderPendingRequests = (project) => {
               
               {proj.pendingRequests && proj.pendingRequests.length > 0 && (
                 <div style={{ marginTop: '1rem' }}>
-                  <strong>Pending Requests:</strong>
+                  <strong style={{ color: ' white' }}>Pending Requests:</strong>
                   {renderPendingRequests(proj)}
                 </div>
               )}
