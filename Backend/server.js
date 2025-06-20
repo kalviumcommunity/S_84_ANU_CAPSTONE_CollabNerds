@@ -20,7 +20,11 @@ const Message = require('./models/Message');
 const app = express();
 
 // === CORS Configuration ===
-const allowedOrigins = ['http://localhost:5173', 'https://starlit-sfogliatella-fdefb9.netlify.app'];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://willowy-queijadas-8ec527.netlify.app',
+  'https://starlit-sfogliatella-fdefb9.netlify.app' // ✅ ADD THIS LINE
+];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -34,6 +38,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
 
 // === Middleware ===
 app.use(express.json());
