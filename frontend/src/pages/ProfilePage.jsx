@@ -13,14 +13,18 @@ const ProfilePage = () => {
     location: '',
     bio: '',
     skills: '',
-    socialLinks: [],
+    socialLinks: {
+      github: '',
+      linkedin: '',
+      twitter: '',
+    },
     profileImage: '',
     dob: null,
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isEditingLinks, setIsEditingLinks] = useState(false); // 🔄 Added toggle for social links
+  const [isEditingLinks, setIsEditingLinks] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -33,20 +37,36 @@ const ProfilePage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      const data = res.data;
+
       setProfile({
-        ...res.data,
-        dob: res.data.dob ? new Date(res.data.dob) : null,
-        socialLinks: Array.isArray(res.data.socialLinks)
-          ? res.data.socialLinks
-          : (res.data.socialLinks || '').split(',').filter((link) => link),
+        ...data,
+        dob: data.dob ? new Date(data.dob) : null,
+        socialLinks: {
+          github: data.socialLinks?.github || '',
+          linkedin: data.socialLinks?.linkedin || '',
+          twitter: data.socialLinks?.twitter || '',
+        },
       });
     } catch (err) {
       console.error(err);
+      alert('Failed to fetch profile');
     }
   };
 
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (['github', 'linkedin', 'twitter'].includes(name)) {
+      setProfile((prev) => ({
+        ...prev,
+        socialLinks: {
+          ...prev.socialLinks,
+          [name]: value,
+        },
+      }));
+    } else {
+      setProfile({ ...profile, [name]: value });
+    }
   };
 
   const handleUpdate = async () => {
@@ -56,13 +76,14 @@ const ProfilePage = () => {
         `${import.meta.env.VITE_API_BASE_URL}/api/profile`,
         {
           ...profile,
-          socialLinks: profile.socialLinks.join(','),
+          dob: profile.dob,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert('Profile updated!');
+      await fetchProfile();
     } catch (err) {
       console.error(err);
       alert('Update failed');
@@ -78,7 +99,7 @@ const ProfilePage = () => {
     formData.append('image', imageFile);
 
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`,
         formData,
         {
@@ -88,44 +109,45 @@ const ProfilePage = () => {
           },
         }
       );
-      setProfile({ ...profile, profileImage: res.data.profileImage });
-      setImageFile(null);
       alert('Image uploaded!');
+      setImageFile(null);
+      await fetchProfile();
     } catch (err) {
       console.error(err);
       alert('Upload failed');
     }
   };
 
-  const handleDeleteImage = () => {
-    setProfile({ ...profile, profileImage: '' });
-  };
-
-  const handleDeleteSocialLink = (index) => {
-    const updatedLinks = [...profile.socialLinks];
-    updatedLinks.splice(index, 1);
-    setProfile({ ...profile, socialLinks: updatedLinks });
+  const handleDeleteImage = async () => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/profile/delete-photo`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('Image deleted');
+      await fetchProfile();
+    } catch (err) {
+      console.error(err);
+      alert('Delete failed');
+    }
   };
 
   const imageURL = profile.profileImage
-    ? `${import.meta.env.VITE_API_BASE_URL}/${profile.profileImage.startsWith('/')
-        ? profile.profileImage.slice(1)
-        : profile.profileImage}`
+    ? `${import.meta.env.VITE_API_BASE_URL}/${profile.profileImage.replace(/^\/+/g, '')}`
     : defaultAvatar;
 
   return (
     <div className="profile-page">
       <div className="profile-container">
-        {/* Avatar Column */}
+        {/* Avatar */}
         <div className="profile-column avatar-column">
           <img
             src={imageFile ? URL.createObjectURL(imageFile) : imageURL}
+            alt="profile"
+            className="avatar"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = defaultAvatar;
             }}
-            alt="profile"
-            className="avatar"
           />
           <input
             type="file"
@@ -140,25 +162,15 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Bio Column */}
+        {/* Bio */}
         <div className="profile-column bio-column">
           <h3>👤 Bio & Info</h3>
-          <div className="form-group">
-            <label>Name</label>
-            <input name="name" value={profile.name} onChange={handleChange} />
-          </div>
-          <div className="form-group">
-            <label>Email</label>
-            <input name="email" value={profile.email} onChange={handleChange} />
-          </div>
-          <div className="form-group">
-            <label>Role</label>
-            <input name="role" value={profile.role} onChange={handleChange} />
-          </div>
-          <div className="form-group">
-            <label>Location</label>
-            <input name="location" value={profile.location} onChange={handleChange} />
-          </div>
+          {['name', 'email', 'role', 'location'].map((field) => (
+            <div key={field} className="form-group">
+              <label>{field[0].toUpperCase() + field.slice(1)}</label>
+              <input name={field} value={profile[field]} onChange={handleChange} />
+            </div>
+          ))}
           <div className="form-group">
             <label>Bio</label>
             <textarea name="bio" rows={3} value={profile.bio} onChange={handleChange} />
@@ -179,7 +191,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Skills & Links Column */}
+        {/* Skills and Social Links */}
         <div className="profile-column skills-column">
           <h3>⚙️ Skills & Links</h3>
           <div className="form-group">
@@ -187,59 +199,33 @@ const ProfilePage = () => {
             <input name="skills" value={profile.skills} onChange={handleChange} />
           </div>
 
-          {/* 🔄 Updated Social Links Section */}
           <div className="form-group">
             <label>Social Links</label>
             <div className="social-links-container">
-              {!isEditingLinks ? (
+              {isEditingLinks ? (
                 <>
-                  {profile.socialLinks.length > 0 ? (
-                    profile.socialLinks.map((link, index) => (
-                      <div key={index} className="social-link-item">
-                        <a
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-link-text"
-                        >
-                          🔗 {link}
-                        </a>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ fontStyle: 'italic', color: '#888' }}>
-                      No social links added
-                    </p>
-                  )}
+                  {['github', 'linkedin', 'twitter'].map((platform) => (
+                    <div key={platform} className="social-link-item edit-mode">
+                      <input
+                        name={platform}
+                        value={profile.socialLinks[platform]}
+                        onChange={handleChange}
+                        placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
+                      />
+                    </div>
+                  ))}
                 </>
               ) : (
                 <>
-                  {profile.socialLinks.map((link, index) => (
-                    <div key={index} className="social-link-item edit-mode">
-                      <input
-                        value={link}
-                        onChange={(e) => {
-                          const links = [...profile.socialLinks];
-                          links[index] = e.target.value;
-                          setProfile({ ...profile, socialLinks: links });
-                        }}
-                        placeholder={`Link ${index + 1}`}
-                      />
-                      <button
-                        className="delete-link-btn"
-                        onClick={() => handleDeleteSocialLink(index)}
-                      >
-                        ❌
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    onClick={() =>
-                      setProfile({ ...profile, socialLinks: [...profile.socialLinks, ''] })
-                    }
-                  >
-                    ➕ Add New Link
-                  </button>
+                  {Object.entries(profile.socialLinks).map(([key, value]) =>
+                    value ? (
+                      <div key={key} className="social-link-item">
+                        <a href={value} target="_blank" rel="noreferrer">
+                          🔗 {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                        </a>
+                      </div>
+                    ) : null
+                  )}
                 </>
               )}
               <button
