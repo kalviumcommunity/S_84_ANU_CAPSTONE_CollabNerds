@@ -23,7 +23,8 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://gregarious-marzipan-0e011f.netlify.app',
-  'https://roaring-cat-ae2673.netlify.app' // ✅ ADD THIS LINE
+  'https://roaring-cat-ae2673.netlify.app' ,
+  'https://classy-fenglisu-eb9528.netlify.app' 
 ];
 
 app.use(cors({
