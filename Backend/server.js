@@ -20,7 +20,7 @@ const Message = require('./models/Message');
 const app = express();
 
 // === CORS Configuration ===
-const allowedOrigins = ['http://localhost:5173', 'https://willowy-queijadas-8ec527.netlify.app'];
+const allowedOrigins = ['http://localhost:5173', 'https://starlit-sfogliatella-fdefb9.netlify.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -128,3 +128,5 @@ const PORT = process.env.PORT || 6767;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// https://starlit-sfogliatella-fdefb9.netlify.app/
