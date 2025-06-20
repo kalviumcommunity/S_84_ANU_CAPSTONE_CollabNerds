@@ -4,7 +4,8 @@ import "../Styles/Projects.css";
 import { jwtDecode } from 'jwt-decode';
 
 const Projects = () => {
-  const API_BASE_URL = 'http://localhost:6767'; // Replace with deployed URL when needed
+  const API_BASE_URL = 'https://s-84-anu-capstone-collabnerds-3.onrender.com'; 
+
 
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
