@@ -97,7 +97,7 @@ const fetchPartners = async () => {
 
   return (
     <div className="teams-container">
-      <h1>🤝CollabNerds: Team Up & Create 🚀</h1>
+      <h1>CollabNerds: Team Up & Create !</h1>
 
       <section className="teams-section">
         <h2>🌍 Discover Collaborators</h2>

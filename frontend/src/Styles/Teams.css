@@ -1,217 +1,165 @@
-/* Visionary Collaboration Theme */
+/* Teams.css – Creative, Fun, Hackathon Startup Style */
+
+:root {
+  --accent: #6366f1; /* Vibrant Indigo */
+  --accent2: #ec4899; /* Rose */
+  --light-bg: #fdfdfd;
+  --dark-text: #1e293b;
+  --subtle-text: #64748b;
+  --card-bg: #ffffffaa;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --radius: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f0f4ff, #fff0f5);
+  color: var(--dark-text);
+}
+
 .teams-container {
-  padding: 3rem;
-  background: linear-gradient(152deg, #0a192f 0%, #020c1b 100%);
-  min-height: 100vh;
-  color: #e6f1ff;
-  font-family: 'Inter', sans-serif;
-  position: relative;
-  overflow-x: hidden;
+  max-width: 1100px;
+  margin: 3rem auto;
+  background: var(--light-bg);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.8s ease-in-out;
 }
 
-/* Constellation Background */
-.teams-container::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle at 70% 30%, rgba(102, 252, 241, 0.1) 0%, transparent 15%),
-    radial-gradient(circle at 30% 70%, rgba(102, 252, 241, 0.1) 0%, transparent 15%);
-  background-size: 40px 40px;
-  opacity: 0.3;
-  z-index: 0;
-  animation: starPulse 8s infinite alternate;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes starPulse {
-  from { opacity: 0.2; }
-  to { opacity: 0.4; }
-}
-
-/* Innovation Sections */
-.teams-section {
-  margin-bottom: 2.5rem;
-  background: rgba(14, 22, 39, 0.95);
-  border: 1px solid rgba(102, 252, 241, 0.1);
-  border-radius: 12px;
-  padding: 2rem;
-  backdrop-filter: blur(8px);
-  position: relative;
-  z-index: 1;
-  transition: transform 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-}
-
-.teams-section:hover {
-  transform: translateY(-3px);
-  border-color: rgba(102, 252, 241, 0.3);
-}
-
-/* Future-Forward Titles */
-.teams-section h2 {
-  font-size: 1.75rem;
-  color: #cfd3d3;
+h1 {
+  text-align: center;
+  font-size: 2.6rem;
+  font-weight: 800;
+  background: linear-gradient(to right, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 2rem;
-  padding-bottom: 0.5rem;
-  position: relative;
+}
+
+.teams-section {
+  margin-bottom: 3rem;
+  animation: floatUp 0.5s ease-in;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.teams-section h2 {
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-bottom: 1rem;
 }
 
-.teams-section h2::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 50px;
-  height: 3px;
-  background: linear-gradient(90deg, #cfd3d3 0%, #45a29e 100%);
+.no-data {
+  text-align: center;
+  font-style: italic;
+  color: var(--subtle-text);
 }
 
-/* Innovation Cards */
-.user-card, .request-card, .partner-card {
+.user-card,
+.request-card,
+.partner-card {
+  background: var(--card-bg);
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--accent2);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  margin-bottom: 1.25rem;
-  background: rgba(23, 42, 69, 0.8);
-  border-radius: 8px;
-  border-left: 4px solid #45a29e;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.user-card:hover, .request-card:hover, .partner-card:hover {
-  transform: translateX(10px);
-  background: rgba(23, 42, 69, 1);
-  box-shadow: 4px 0 15px rgba(102, 252, 241, 0.1);
-}
-
-/* Hover Connection Effect */
-.user-card::after {
-  content: '🚀';
-  position: absolute;
-  right: -30px;
-  opacity: 0;
+  box-shadow: var(--shadow);
   transition: all 0.3s ease;
-  filter: drop-shadow(0 0 5px rgba(102, 252, 241, 0.5));
 }
 
-.user-card:hover::after {
-  right: 20px;
-  opacity: 1;
+.user-card:hover,
+.request-card:hover,
+.partner-card:hover {
+  transform: scale(1.02);
+  background-color: #fefeff;
 }
 
-/* Action Buttons - Quantum Style */
-.user-card button, .request-card button, .partner-card button {
-  background: linear-gradient(135deg, #cfd3d3 0%, #45a29e 100%);
-  color: #0a192f;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+.user-card span,
+.request-card span,
+.partner-card span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.88rem;
   font-weight: 600;
+  border-radius: 999px;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button.accept {
+  background: #22c55e;
+  color: white;
+}
+
+button.reject {
+  background: #ef4444;
+  color: white;
+}
+
+button:not(.accept):not(.reject) {
+  background: linear-gradient(to right, var(--accent), var(--accent2));
+  color: white;
+}
+
+.btn-group {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  position: relative;
-  overflow: hidden;
+  gap: 0.5rem;
 }
 
-.user-card button::before, .partner-card button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: 0.5s;
-}
+/* Mobile-friendly */
+@media screen and (max-width: 768px) {
+  .user-card,
+  .request-card,
+  .partner-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 
-.user-card button:hover::before, .partner-card button:hover::before {
-  left: 100%;
-}
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
 
-.user-card button:hover, .request-card button:hover, .partner-card button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 252, 241, 0.3);
+  button {
+    width: 100%;
+  }
 }
-
-/* Specialized Buttons */
-.accept {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a29e 100%) !important;
-}
-
-.reject {
-  background: linear-gradient(135deg, #FF5252 0%, #D32F2F 100%) !important;
-}
-
-/* Partner Status Glow */
-.partner-card {
-  border-left-color: #cfd3d3;
-  position: relative;
-}
-
-.partner-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -4px;
-  height: 100%;
-  width: 4px;
-  background: #cfd3d3;
-  filter: drop-shadow(0 0 8px #cfd3d3);
-}
-
-/* Motivational Empty States */
-.no-data {
-  text-align: center;
-  padding: 2rem;
-  background: rgba(14, 22, 39, 0.6);
-  border-radius: 8px;
-  border: 2px dashed rgba(102, 252, 241, 0.3);
-  color: #cfd3d3;
-  font-size: 1.1rem;
-}
-
-.no-data::before {
-  content: '🌌';
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 0 5px rgba(102, 252, 241, 0.3));
-}
-
-/* Visionary Header */
-h1 {
-  text-align: center;
-  font-size: 2.5rem;   
-  margin-bottom: 3rem;
-  color: #cfd3d3;
-  text-shadow: 0 0 15px rgba(102, 252, 241, 0.3);
-  position: relative;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* Connection Lines Animation */
-@keyframes connect {
-  from { width: 0; opacity: 0; }
-  to { width: 40px; opacity: 1;}
-} 

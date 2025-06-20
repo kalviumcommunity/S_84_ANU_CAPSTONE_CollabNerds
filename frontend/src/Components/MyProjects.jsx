@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../api/axiosInstance';
-
+import "../Styles/MyProject.css"
 const MyProjects = () => {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState({ name: '', description: '', techStack: '' });
@@ -112,17 +112,17 @@ const renderPendingRequests = (project) => {
     const name = isObject ? userObj.name : 'Unknown';
     const email = isObject ? userObj.email : 'No email';
 
-    return (
-      <div key={id} style={{ marginTop: '0.5rem' }}>
-        <span>{name} ({email})</span>
-        <button onClick={() => handleAccept(project._id, id)} style={{ marginLeft: '1rem' }}>
-          ✅ Accept
-        </button>
-        <button onClick={() => handleReject(project._id, id)} style={{ marginLeft: '0.5rem', background: '#ff6b6b', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '6px' }}>
-          ❌ Reject
-        </button>
-      </div>
-    );
+   return (
+  <div key={id} className="request-item">
+    <span className="request-user">{name} ({email})</span>
+    <button onClick={() => handleAccept(project._id, id)} className="accept-btn">
+      ✅ Accept
+    </button>
+    <button onClick={() => handleReject(project._id, id)} className="reject-btn">
+      ❌ Reject
+    </button>
+  </div>
+);
   });
 };
 

@@ -103,7 +103,7 @@ const Projects = () => {
             <div className="project-card" key={project._id}>
               <h3 className="project-title">{project.name}</h3>
               <p className="project-desc">{project.description}</p>
-              <p><strong>🎯 Goals:</strong> {project.goals || 'Not specified'}</p>
+              {/* <p><strong>🎯 Goals:</strong> {project.goals || 'Not specified'}</p> */}
               <p><strong>💻 Tech Stack:</strong> {project.techStack}</p>
               <p><strong>🧑 Owner:</strong> {project.createdBy?.name || 'Unknown'}</p>
               <p><strong>🤝 Team:</strong> {
