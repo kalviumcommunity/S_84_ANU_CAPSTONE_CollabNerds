@@ -12,7 +12,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'https://s-84-anu-capstone-collabnerds-3.onrender.com'; 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
   // Redirect if already logged in
   useEffect(() => {
