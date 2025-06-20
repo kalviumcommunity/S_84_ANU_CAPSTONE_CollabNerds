@@ -48,7 +48,7 @@ const getMyProjects = async (req, res) => {
       .populate('collaborators', 'name email')
       .populate('pendingRequests', 'name email'); // 🧠 VERY IMPORTANT!
 
-    console.log("✅ Fetched project with populated pendingRequests:", projects[0].pendingRequests);
+    // console.log("✅ Fetched project with populated pendingRequests:", projects[0].pendingRequests);
 
     res.status(200).json(projects);
   } catch (err) {
@@ -110,43 +110,71 @@ const acceptCollabRequest = async (req, res) => {
   const { userId } = req.body;
 
   try {
-    const project = await Project.findById(projectId) 
+    const project = await Project.findById(projectId);
     const userIdStr = userId.toString();
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+    if (project.createdBy.toString() !== req.user._id.toString())
+      return res.status(403).json({ message: 'Not authorized' });
+
+    if (project.collaborators.some(user => user.toString() === userIdStr)) {
+      return res.status(400).json({ message: 'Already a collaborator' });
     }
 
-    if (project.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to accept collaborators on this project.' });
+    if (!project.pendingRequests.some(id => id.toString() === userIdStr)) {
+      return res.status(400).json({ message: 'User has not requested to join' });
     }
 
-    // Already a collaborator
-    if (project.collaborators.some(user => user._id.toString() === userId)) {
-      return res.status(400).json({ message: 'User is already a collaborator.' });
-    }
-     if (!project.pendingRequests.some(id => id.toString() === userIdStr)) {
-      return res.status(400).json({ message: 'User has not requested to join.' });
-    }
-
-    // ✅ Add to collaborators
+    // Add to collaborators
     project.collaborators.push(userId);
-
-    // ✅ Remove from pendingRequests
-    project.pendingRequests = project.pendingRequests.filter(
-      id => id.toString() !== userIdStr
-    );
-
+    // Remove from pending
+    project.pendingRequests = project.pendingRequests.filter(id => id.toString() !== userIdStr);
 
     await project.save();
-     console.log('🔍 Before Accepting:', JSON.stringify(project, null, 2));
-    res.status(200).json({ message: 'Collaboration request accepted.' });
+
+    const updatedProject = await Project.findById(projectId)
+      .populate('createdBy', 'name email')
+      .populate('collaborators', 'name email')
+      .populate('pendingRequests', 'name email');
+
+    res.status(200).json({ message: 'Accepted', project: updatedProject });
+
   } catch (err) {
-    console.error('❌ Error accepting collaborator:', err.message);
-    res.status(500).json({ message: 'Server Error', error: err.message });
+    console.error('❌ Error accepting request:', err.message);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
+const rejectCollabRequest = async (req, res) => {
+  const { projectId } = req.params;
+  const { userId } = req.body;
 
+  try {
+    const project = await Project.findById(projectId);
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+
+    if (project.createdBy.toString() !== req.user._id.toString())
+      return res.status(403).json({ message: 'Not authorized' });
+
+    // Remove user from pending
+    project.pendingRequests = project.pendingRequests.filter(
+      id => id.toString() !== userId.toString()
+    );
+
+    await project.save();
+
+    const updatedProject = await Project.findById(projectId)
+      .populate('createdBy', 'name email')
+      .populate('collaborators', 'name email')
+      .populate('pendingRequests', 'name email');
+
+    res.status(200).json({ message: 'Rejected', project: updatedProject });
+
+  } catch (err) {
+    console.error('❌ Error rejecting request:', err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
 
 // Delete a project
 const deleteProject = async (req, res) => {
@@ -203,4 +231,5 @@ module.exports = {
   requestToJoinProject,
   acceptCollabRequest,
   getAllProjects,
+  rejectCollabRequest,
 };

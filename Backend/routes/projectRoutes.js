@@ -9,7 +9,7 @@ const {
   requestToJoinProject,
   acceptCollabRequest,
   getAllProjects,
-  
+  rejectCollabRequest  
 } = require('../controllers/projectController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -21,6 +21,7 @@ router.get('/my-projects', protect, getMyProjects);
 router.put('/:projectId', protect, updateProject);
 router.delete('/:projectId', protect, deleteProject);
 router.post('/:projectId/join', protect, requestToJoinProject);
+router.post('/:projectId/reject', protect, rejectCollabRequest);
 // router.post('/:projectId/accept', protect, acceptCollabRequest);
 
 module.exports = router;

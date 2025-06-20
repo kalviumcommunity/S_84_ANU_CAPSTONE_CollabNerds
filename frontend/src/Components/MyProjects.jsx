@@ -14,7 +14,7 @@ const MyProjects = () => {
       setLoading(true);
       const response = await axios.get('/api/projects/my-projects');
       
-      console.log("🔥 Fetched projects:", response.data);
+      // console.log("🔥 Fetched projects:", response.data); 
       if (response.data.length > 0) {
         console.log("🔥 First project pendingRequests:", 
           response.data[0].pendingRequests);
@@ -32,6 +32,24 @@ const MyProjects = () => {
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
+
+  const handleReject = async (projectId, userId) => {
+  try {
+    const response = await axios.post(`/api/projects/${projectId}/reject`, { userId }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+
+    const updated = response.data.project;
+    setProjects((prev) =>
+      prev.map((p) => (p._id === updated._id ? updated : p))
+    );
+
+  } catch (err) {
+    console.error("Error rejecting user:", err.message);
+  }
+};
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,22 +106,11 @@ const MyProjects = () => {
   // Render pending requests safely
 const renderPendingRequests = (project) => {
   return project.pendingRequests.map((userObj) => {
-    let id, name, email;
+    const isObject = typeof userObj === 'object' && userObj !== null;
 
-    if (typeof userObj === 'object' && userObj !== null && userObj.name && userObj.email) {
-      // Fully populated
-      id = userObj._id;
-      name = userObj.name;
-      email = userObj.email;
-    } else {
-      // Not populated
-      console.warn('⚠️ Not populated pendingRequest:', userObj);
-      return (
-        <div key={userObj}>
-          <span>⚠️ Still loading user info</span>
-        </div>
-      );
-    }
+    const id = isObject ? userObj._id : userObj;
+    const name = isObject ? userObj.name : 'Unknown';
+    const email = isObject ? userObj.email : 'No email';
 
     return (
       <div key={id} style={{ marginTop: '0.5rem' }}>
@@ -111,10 +118,14 @@ const renderPendingRequests = (project) => {
         <button onClick={() => handleAccept(project._id, id)} style={{ marginLeft: '1rem' }}>
           ✅ Accept
         </button>
+        <button onClick={() => handleReject(project._id, id)} style={{ marginLeft: '0.5rem', background: '#ff6b6b', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '6px' }}>
+          ❌ Reject
+        </button>
       </div>
     );
   });
 };
+
 
   if (loading) return <div style={loadingStyle}>Loading projects...</div>;
   if (error) return <div style={errorStyle}>Error: {error}</div>;
