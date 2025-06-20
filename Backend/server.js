@@ -1,5 +1,5 @@
 require('dotenv').config(); // Load environment variables
-
+const Project = require('./models/Project');
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -15,6 +15,7 @@ const chatRoutes = require('./routes/chatRoutes');
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const Message = require('./models/Message');
+
 
 const app = express();
 

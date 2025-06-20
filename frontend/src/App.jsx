@@ -11,6 +11,7 @@ import Dashboard from './Components/Dashboard';
 import Teams from './Components/Teams';
 import ChatWindow from './Components/ChatWindow';
 import ProfilePage from './pages/ProfilePage';
+import Projects from "./Components/Projects" ; 
 function App() {
   return (
     <AuthProvider>
@@ -31,6 +32,16 @@ function App() {
               </PrivateRoute>
             }
           />
+
+            <Route
+            path="/projects"
+            element={
+              <PrivateRoute>
+                <Projects />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="/teams"
             element={

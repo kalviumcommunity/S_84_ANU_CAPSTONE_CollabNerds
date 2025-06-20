@@ -1,11 +1,11 @@
+// src/api/axiosInstance.js
 import axios from 'axios';
 
-const instance = axios.create({
-  baseURL: 'https://s-84-anu-capstone-collabnerds-3.onrender.com', // ✅ Hardcoded base URL
-  withCredentials: true,
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:6767', // or your deployed base URL
 });
 
-instance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -13,4 +13,4 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
-export default instance;
+export default axiosInstance;

@@ -1,27 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../api/axiosInstance';
-// import "../Styles/MyProject.css" 
 
 const MyProjects = () => {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState({ name: '', description: '', techStack: '' });
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchProjects = async () => {
+  // Fetch projects with useCallback to memoize the function
+  const fetchProjects = useCallback(async () => {
     try {
-      const res = await axios.get('/api/projects/my-projects', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setProjects(res.data);
+      setLoading(true);
+      const response = await axios.get('/api/projects/my-projects');
+      
+      console.log("🔥 Fetched projects:", response.data);
+      if (response.data.length > 0) {
+        console.log("🔥 First project pendingRequests:", 
+          response.data[0].pendingRequests);
+      }
+      
+      setProjects(response.data);
     } catch (error) {
-      console.error("Error fetching projects:", error.message);
+      console.error("Error fetching projects:", error);
+      setError("Failed to load projects");
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
-  
+  }, [fetchProjects]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -36,7 +47,7 @@ const MyProjects = () => {
       }
       setForm({ name: '', description: '', techStack: '' });
       setEditingId(null);
-      fetchProjects();
+      fetchProjects(); // Refresh projects after update
     } catch (err) {
       console.error("Error saving project:", err.message);
     }
@@ -47,7 +58,7 @@ const MyProjects = () => {
       await axios.delete(`/api/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      fetchProjects();
+      fetchProjects(); // Refresh projects after delete
     } catch (err) {
       console.error("Error deleting project:", err.message);
     }
@@ -61,6 +72,52 @@ const MyProjects = () => {
     });
     setEditingId(project._id);
   };
+
+  const handleAccept = async (projectId, userId) => {
+    try {
+      await axios.post(`/api/projects/${projectId}/accept`, { userId }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      alert('User accepted!');
+      fetchProjects(); // Refresh projects after accepting
+    } catch (err) {
+      console.error("Error accepting user:", err.message);
+    }
+  };
+
+  // Render pending requests safely
+const renderPendingRequests = (project) => {
+  return project.pendingRequests.map((userObj) => {
+    let id, name, email;
+
+    if (typeof userObj === 'object' && userObj !== null && userObj.name && userObj.email) {
+      // Fully populated
+      id = userObj._id;
+      name = userObj.name;
+      email = userObj.email;
+    } else {
+      // Not populated
+      console.warn('⚠️ Not populated pendingRequest:', userObj);
+      return (
+        <div key={userObj}>
+          <span>⚠️ Still loading user info</span>
+        </div>
+      );
+    }
+
+    return (
+      <div key={id} style={{ marginTop: '0.5rem' }}>
+        <span>{name} ({email})</span>
+        <button onClick={() => handleAccept(project._id, id)} style={{ marginLeft: '1rem' }}>
+          ✅ Accept
+        </button>
+      </div>
+    );
+  });
+};
+
+  if (loading) return <div style={loadingStyle}>Loading projects...</div>;
+  if (error) return <div style={errorStyle}>Error: {error}</div>;
 
   return (
     <div style={containerStyle}>
@@ -104,14 +161,20 @@ const MyProjects = () => {
           <li key={proj._id} style={{ marginBottom: '1.5rem' }}>
             <div style={projectCardStyle}>
               <h4 style={projectTitle}>
-                Title : {proj.name} <span style={techStyle}>
-                  <br/> Tech Stack : {proj.techStack}</span>
+                Title : {proj.name} <span style={techStyle}><br/> Tech Stack : {proj.techStack}</span>
               </h4>
               <p style={projectDescription}>Description : {proj.description}</p>
               <div className="btn-group">
                 <button onClick={() => handleEdit(proj)} className="edit-btn">Edit</button>
                 <button onClick={() => handleDelete(proj._id)} className="delete-btn">Delete</button>
               </div>
+              
+              {proj.pendingRequests && proj.pendingRequests.length > 0 && (
+                <div style={{ marginTop: '1rem' }}>
+                  <strong>Pending Requests:</strong>
+                  {renderPendingRequests(proj)}
+                </div>
+              )}
             </div>
           </li>
         ))}
@@ -120,7 +183,7 @@ const MyProjects = () => {
   );
 };
 
-// ✅ Base container with transparency and bubble animations
+// Styles
 const containerStyle = {
   background: 'linear-gradient(45deg, rgba(26, 11, 46, 0.2) 0%, rgba(45, 25, 86, 0.2) 50%, rgba(74, 43, 124, 0.2) 100%)',
   borderRadius: '20px',
@@ -132,7 +195,6 @@ const containerStyle = {
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
 };
 
-// ✅ Animated grey bubble effect
 const animatedBg = {
   position: 'absolute',
   top: '-50%',
@@ -145,7 +207,6 @@ const animatedBg = {
   zIndex: 0,
 };
 
-// ✅ Text and section styling with a glow effect
 const headingStyle = {
   textAlign: 'center',
   marginBottom: '2rem',
@@ -165,7 +226,6 @@ const sectionHeadingStyle = {
   textShadow: '0 4px 15px rgba(54, 52, 55, 0.3)',
 };
 
-// ✅ Form and button styling with glowing effects
 const formStyle = {
   marginBottom: '3rem',
   background: 'hsl(0, 0.00%, 100.00%)',
@@ -182,8 +242,8 @@ const inputStyle = {
   margin: '1rem 0',
   borderRadius: '12px',
   border: '1px solid rgba(15, 14, 16, 0.2)',
-  background: 'rgba(10, 11, 12, 0.3)', // slate grey
-color: '#f3f4f6',
+  background: 'rgba(10, 11, 12, 0.3)',
+  color: '#f3f4f6',
   fontSize: '1rem',
   transition: 'all 0.3s ease',
 };
@@ -198,7 +258,6 @@ const buttonStyle = {
   backdropFilter: 'blur(5px)',
 };
 
-// ✅ Card styles with bubble-like hover effect
 const projectCardStyle = {
   background: 'linear-gradient(145deg, rgba(207, 205, 210, 0.3), rgba(3, 3, 27, 0.4))',
   borderRadius: '16px',
@@ -224,19 +283,18 @@ const projectDescription = {
   lineHeight: '1.6',
 };
 
-// Add these global styles for animations
-// const globalStyles = `
-//   @keyframes float {
-//     0% { transform: translate(0, 0) rotate(30deg); }
-//     50% { transform: translate(-25%, 5%) rotate(30deg); }
-//     100% { transform: translate(0, 0) rotate(30deg); }
-//   }
+const loadingStyle = {
+  textAlign: 'center',
+  padding: '2rem',
+  fontSize: '1.2rem',
+  color: '#f3f4f6'
+};
 
-//   @keyframes gradientShift {
-//     0% { background-position: 0% 50%; }
-//     50% { background-position: 100% 50%; }
-//     100% { background-position: 0% 50%; }
-//   }
-// `;
+const errorStyle = {
+  textAlign: 'center',
+  padding: '2rem',
+  fontSize: '1.2rem',
+  color: '#ff6b6b'
+};
 
 export default MyProjects;
