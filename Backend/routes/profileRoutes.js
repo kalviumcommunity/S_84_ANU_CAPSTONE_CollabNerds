@@ -58,24 +58,22 @@ router.put('/', protect, async (req, res) => {
   }
 });
 
-// ✅ Upload photo - saves to disk and stores path
 router.post('/upload-photo', protect, upload.single('image'), async (req, res) => {
+  console.log("📦 Incoming file:", req.file);  // <--- ADD THIS
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-    console.log('💡 File received:', req.file.originalname);
-    console.log('💡 User ID:', req.user?.id);
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     user.profileImage = base64Image;
+
     await user.save();
 
-    res.json({ message: 'Image uploaded', profileImage: base64Image });
+    res.json({ message: 'Image uploaded successfully', profileImage: base64Image });
   } catch (err) {
-    console.error('❌ Upload error:', err); // Print full stack trace
+    console.error('Upload error:', err);  // FULL ERROR
     res.status(500).json({ error: 'Upload failed', details: err.message });
   }
 });
@@ -90,12 +88,7 @@ router.delete('/delete-photo', protect, async (req, res) => {
       return res.status(404).json({ error: 'No image to delete' });
     }
 
-    const fullPath = path.join(__dirname, '..', user.profileImage);
-    fs.unlink(fullPath, (err) => {
-      if (err) console.warn('⚠️ File might already be deleted:', err.message);
-    });
-
-    user.profileImage = '';
+    user.profileImage = ''; // Just clear the field in MongoDB
     await user.save();
 
     res.json({ message: 'Image deleted successfully' });

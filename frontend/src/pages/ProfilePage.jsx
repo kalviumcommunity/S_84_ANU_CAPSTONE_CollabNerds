@@ -108,7 +108,7 @@ const ProfilePage = () => {
 
   try {
     const res = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`,
+     `https://s-84-anu-capstone-collabnerds-3.onrender.com/api/profile/upload-photo`,
       formData,
       {
         headers: {
@@ -117,7 +117,7 @@ const ProfilePage = () => {
         },
       }
     );
-
+// `${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-photo`
     if (res.data?.profileImage) {
       alert('✅ Image uploaded!');
       setImageFile(null);
@@ -146,9 +146,7 @@ const ProfilePage = () => {
     }
   };
 
-  const imageURL = profile.profileImage
-    ? `${import.meta.env.VITE_API_BASE_URL}${profile.profileImage}`
-    : defaultAvatar;
+const imageURL = profile.profileImage || defaultAvatar;
 
   return (
     <div className="profile-page">
@@ -167,7 +165,10 @@ const ProfilePage = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setImageFile(e.target.files[0])}
+           onChange={(e) => {
+    setImageFile(e.target.files[0]);
+    e.target.value = null;
+  }}
           />
 
           {imageFile && (

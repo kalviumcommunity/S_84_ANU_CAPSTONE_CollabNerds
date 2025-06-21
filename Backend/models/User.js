@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema({
     twitter: { type: String, default: '' },
   },
 
-  profileImage: { type: String, default: '' },
+  profileImage: {
+  type: String,
+  default: '',
+}
 });
 
 userSchema.pre('save', async function (next) {

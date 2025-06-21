@@ -1,31 +1,8 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '../uploads/profile_images');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  },
-});
+const storage = multer.memoryStorage(); // ✅ In-memory, no disk file
 
 const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (!['.jpg', '.jpeg', '.png', '.heic'].includes(ext)) {
-      return cb(new Error('Only images are allowed'), false);
-    }
-    cb(null, true);
-  },
-});
+  storage});
 
 module.exports = upload;
