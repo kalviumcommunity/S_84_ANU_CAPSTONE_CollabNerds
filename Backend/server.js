@@ -22,7 +22,7 @@ const app = express();
 // === CORS Configuration ===
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://gregarious-marzipan-0e011f.netlify.app', 
+  'https://glowing-melba-4fb0ac.netlify.app', 
 ];
 
 app.use(cors({
