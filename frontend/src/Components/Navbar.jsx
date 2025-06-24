@@ -1,9 +1,23 @@
-// Navbar.jsx
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase';
 import '../Styles/Navbar.css';
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    auth.signOut();
+    window.location.href = '/login';
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -17,6 +31,9 @@ const Navbar = () => {
           <li><Link to="/teams">Teams</Link></li>
           <li><Link to="/dashboard">Dashboard</Link></li>
           <li><Link to="/profile">Profile</Link></li>
+          {isLoggedIn && (
+            <li><button className="logout-btn" onClick={handleLogout}>Logout</button></li>
+          )}
         </ul>
       </div>
     </nav>

@@ -11,6 +11,30 @@
   --radius: 16px;
 }
 
+.status-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-dot.online {
+  background-color: #00e676; /* Green */
+}
+
+.status-dot.offline {
+  background-color: #e53935; /* Red */
+}
+
+.user-name {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
 body {
   margin: 0;
   font-family: 'Poppins', 'Segoe UI', sans-serif;

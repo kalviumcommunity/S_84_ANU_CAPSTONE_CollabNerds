@@ -24,8 +24,7 @@ const ChatWindow = () => {
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
-  
-  // Fetch users
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -41,14 +40,12 @@ const ChatWindow = () => {
     fetchUsers();
   }, [token]);
 
-  // Normalize sender
   const normalizeSender = (senderId) => {
     if (typeof senderId === 'object' && senderId.name) return senderId;
     const user = users.find(u => u._id === senderId);
     return user ? user : { _id: senderId, name: 'Unknown User' };
   };
 
-  // Fetch messages
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -69,7 +66,6 @@ const ChatWindow = () => {
     if (!loadingUsers) fetchMessages();
   }, [partnerId, token, loadingUsers]);
 
-  // Socket setup
   useEffect(() => {
     if (loadingUsers) return;
     if (!socket.connected) socket.connect();
@@ -98,7 +94,6 @@ const ChatWindow = () => {
     };
   }, [partnerId, currentUser._id, loadingUsers]);
 
-  // Auto scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -138,9 +133,20 @@ const ChatWindow = () => {
     }, 1500);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   const getPartnerName = () => {
     const partner = users.find(u => u._id === partnerId);
     return partner ? partner.name : 'Unknown User';
+  };
+
+  const clearChat = () => {
+    setMessages([]);
   };
 
   return (
@@ -162,9 +168,11 @@ const ChatWindow = () => {
           type="text"
           value={newMsg}
           onChange={handleTyping}
+          onKeyDown={handleKeyDown}   // 👈 This enables 'Enter' to send
           placeholder="Type a message..."
         />
         <button onClick={sendMessage}>Send</button>
+        <button onClick={clearChat} className="clear-btn">🧹 Clear Chat</button>
       </div>
     </div>
   );

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/Teams.css';
+import socket from '../socket';
 
 const Teams = () => {
   const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [partners, setPartners] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
@@ -14,7 +16,7 @@ const Teams = () => {
 
   useEffect(() => {
     if (token) {
-      fetchPartners(); // First fetch partners
+      fetchPartners();
     }
   }, [token]);
 
@@ -25,9 +27,23 @@ const Teams = () => {
     }
   }, [partners, token]);
 
+  useEffect(() => {
+    if (!socket.connected) socket.connect();
+
+    socket.emit('online', { userId: currentUser._id });
+
+    socket.on('updateOnlineUsers', (userIds) => {
+      setOnlineUsers(userIds);
+    });
+
+    return () => {
+      socket.off('updateOnlineUsers');
+    };
+  }, [currentUser._id]);
+
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/users', {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const filtered = res.data.filter(
@@ -41,7 +57,7 @@ const Teams = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/requests', {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/chat/requests`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRequests(res.data);
@@ -50,24 +66,23 @@ const Teams = () => {
     }
   };
 
-const fetchPartners = async () => {
-  try {
-    const res = await axios.get('https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/partners', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    // Filter out duplicates by checking if the partner already exists
-    const uniquePartners = [...new Set(res.data.map(p => p._id))]
-      .map(id => res.data.find(p => p._id === id));
-    setPartners(uniquePartners);
-  } catch (err) {
-    console.error('Error fetching chat partners:', err);
-  }
-};
+  const fetchPartners = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/chat/partners`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const uniquePartners = [...new Set(res.data.map(p => p._id))]
+        .map(id => res.data.find(p => p._id === id));
+      setPartners(uniquePartners);
+    } catch (err) {
+      console.error('Error fetching chat partners:', err);
+    }
+  };
 
   const sendRequest = async (id) => {
     try {
       await axios.post(
-        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/request',
+        `${import.meta.env.VITE_API_BASE_URL}/api/chat/request`,
         { targetUserId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -80,7 +95,7 @@ const fetchPartners = async () => {
   const respond = async (requesterId, action) => {
     try {
       await axios.post(
-        'https://s-84-anu-capstone-collabnerds-3.onrender.com/api/chat/respond',
+        `${import.meta.env.VITE_API_BASE_URL}/api/chat/respond`,
         { requesterId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,6 +110,8 @@ const fetchPartners = async () => {
     navigate(`/chat/${partnerId}`);
   };
 
+  const isOnline = (id) => onlineUsers.includes(id);
+
   return (
     <div className="teams-container">
       <h1>CollabNerds: Team Up & Create !</h1>
@@ -106,7 +123,10 @@ const fetchPartners = async () => {
         ) : (
           users.map(user => (
             <div key={user._id} className="user-card">
-              <span>{user.name}</span>
+              <span className="user-name">
+                <span className={`status-dot ${isOnline(user._id) ? 'online' : 'offline'}`}></span>
+                {user.name}
+              </span>
               <button onClick={() => sendRequest(user._id)}>Request Chat</button>
             </div>
           ))
@@ -120,7 +140,7 @@ const fetchPartners = async () => {
         ) : (
           requests.map(req => (
             <div key={req.from._id} className="request-card">
-              <span>{req.from.name}</span>
+              <span>{req.from.name} {isOnline(req.from._id) ? '🟢' : '🔴'}</span>
               <div className="btn-group">
                 <button onClick={() => respond(req.from._id, 'accepted')} className="accept">Accept</button>
                 <button onClick={() => respond(req.from._id, 'rejected')} className="reject">Reject</button>
@@ -137,7 +157,7 @@ const fetchPartners = async () => {
         ) : (
           partners.map(p => (
             <div key={p._id} className="partner-card">
-              <span>{p.name}</span>
+              <span>{p.name} {isOnline(p._id) ? '🟢' : '🔴'}</span>
               <button onClick={() => handleChatNavigate(p._id)}>Open Chat</button>
             </div>
           ))

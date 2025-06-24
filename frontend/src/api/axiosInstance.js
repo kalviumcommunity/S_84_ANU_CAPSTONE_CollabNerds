@@ -4,7 +4,7 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   baseURL: import.meta.env.PROD
   ? 'https://s-84-anu-capstone-collabnerds-3.onrender.com' // replace with actual backend URL
-  : 'http://localhost:6767/api',
+  : 'http://localhost:6767/',
 });
 
 axiosInstance.interceptors.request.use((config) => {

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import socket from '../socket';
 import "../Styles/LoginPage.css";
+import { auth, provider } from '../firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -12,13 +14,12 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      navigate('/dashboard');  // If the user is already logged in, redirect to dashboard
+      navigate('/dashboard');
     }
   }, [navigate]);
 
@@ -38,15 +39,10 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // ✅ Save token and user data to localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-
-        // ✅ Set socket auth and connect
         socket.auth = { token: data.token };
         socket.connect();
-
-        // ✅ Navigate to dashboard
         navigate('/dashboard');
       } else {
         setError(data.message || 'Something went wrong. Please try again.');
@@ -54,6 +50,38 @@ const LoginPage = () => {
     } catch (err) {
       console.error('Network error:', err.message);
       setError('Network error. Please check your connection.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: user.displayName,
+          email: user.email,
+          googleId: user.uid,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        socket.auth = { token: data.token };
+        socket.connect();
+        navigate('/dashboard');
+      } else {
+        setError(data.message || 'Google Sign-in failed.');
+      }
+    } catch (err) {
+      console.error('Google Sign-in Error:', err.message);
+      setError('Google Sign-in failed. Try again.');
     }
   };
 
@@ -123,7 +151,7 @@ const LoginPage = () => {
           )}
         </div>
 
-        <button className="google-login">
+        <button className="google-login" onClick={handleGoogleLogin}>
           <FcGoogle />
           {isLogin ? ' Continue with Google' : ' Sign up with Google'}
         </button>

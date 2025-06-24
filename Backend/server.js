@@ -16,7 +16,6 @@ const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const Message = require('./models/Message');
 
-
 const app = express();
 
 // === CORS Configuration ===
@@ -38,12 +37,12 @@ app.use(cors({
   credentials: true
 }));
 
-
 // === Middleware ===
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 // === API Routes ===
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -87,40 +86,71 @@ io.use((socket, next) => {
   }
 });
 
-// Socket.IO Events
+const onlineUsers = new Set();
+
 io.on('connection', (socket) => {
-  console.log(`✅ User connected with ID: ${socket.userId}`);
+  const userId = socket.userId;
+  console.log(`✅ User connected: ${userId}`);
 
-  // Join personal room for direct communication
-  socket.join(socket.userId);
+  // Add to online users and broadcast updated list
+  onlineUsers.add(userId);
+  io.emit('updateOnlineUsers', [...onlineUsers]);
 
-  // Handle chat message sending
+  // Join personal room
+  socket.join(userId);
+
+  // Join specific room for chats
+  socket.on('joinRoom', ({ room }) => {
+    socket.join(room);
+  });
+
+  socket.on('leaveRoom', ({ room }) => {
+    socket.leave(room);
+  });
+
+  socket.on('typing', ({ to, name }) => {
+    const room = [userId, to].sort().join('_');
+    io.to(room).emit('typing', { from: userId, name });
+  });
+
+  socket.on('stopTyping', ({ to }) => {
+    const room = [userId, to].sort().join('_');
+    io.to(room).emit('stopTyping', { from: userId });
+  });
+
   socket.on('sendMessage', async ({ content, to }) => {
     try {
-      const message = new Message({
-        sender: socket.userId,
-        receiver: to,
-        content
-      });
+      const message = new Message({ sender: userId, receiver: to, content });
       await message.save();
-
-      // Construct unique room name
-      const room = [socket.userId, to].sort().join('_');
-
-      // Emit message to both users
+      const room = [userId, to].sort().join('_');
       io.to(room).emit('receiveMessage', {
         content,
-        sender: socket.userId
+        sender: userId,
+        _id: message._id,
+        timestamp: message.timestamp
       });
     } catch (err) {
       console.error("❌ Error sending message:", err.message);
     }
   });
 
+  socket.on('deleteMessage', async ({ messageId, to }) => {
+    try {
+      await Message.findByIdAndDelete(messageId);
+      const room = [userId, to].sort().join('_');
+      io.to(room).emit('messageDeleted', { messageId });
+    } catch (err) {
+      console.error("❌ Error deleting message:", err.message);
+    }
+  });
+
   socket.on('disconnect', () => {
-    console.log(`❌ User disconnected: ${socket.userId}`);
+    console.log(`❌ User disconnected: ${userId}`);
+    onlineUsers.delete(userId);
+    io.emit('updateOnlineUsers', [...onlineUsers]);
   });
 });
+
 
 // === Global Error Handler ===
 app.use((err, req, res, next) => {
@@ -133,5 +163,3 @@ const PORT = process.env.PORT || 6767;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-
-// https://starlit-sfogliatella-fdefb9.netlify.app/
