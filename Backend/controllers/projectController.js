@@ -27,6 +27,23 @@ const createProject = async (req, res) => {
   }
 };
 
+const deletee = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const deletedProject = await Project.findByIdAndDelete(projectId);
+
+    if (!deletedProject) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    res.json({ message: 'Project deleted successfully', project: deletedProject });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find()
@@ -232,4 +249,5 @@ module.exports = {
   acceptCollabRequest,
   getAllProjects,
   rejectCollabRequest,
+  deletee
 };

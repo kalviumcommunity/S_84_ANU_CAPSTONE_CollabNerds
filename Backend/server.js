@@ -22,6 +22,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://glowing-melba-4fb0ac.netlify.app', 
+  'https://s-84-anu-capstone-collabnerds-3.onrender.com'
 ];
 
 app.use(cors({

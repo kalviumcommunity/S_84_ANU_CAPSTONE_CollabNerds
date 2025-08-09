@@ -28,7 +28,10 @@ const Teams = () => {
   }, [partners, token]);
 
   useEffect(() => {
-    if (!socket.connected) socket.connect();
+    if (!socket.connected) {
+    socket.auth = { token: localStorage.getItem('token') }; 
+    socket.connect();
+  }
 
     socket.emit('online', { userId: currentUser._id });
 
@@ -139,14 +142,16 @@ const Teams = () => {
           <p className="no-data">No new chat requests at the moment.</p>
         ) : (
           requests.map(req => (
-            <div key={req.from._id} className="request-card">
-              <span>{req.from.name} {isOnline(req.from._id) ? '🟢' : '🔴'}</span>
-              <div className="btn-group">
-                <button onClick={() => respond(req.from._id, 'accepted')} className="accept">Accept</button>
-                <button onClick={() => respond(req.from._id, 'rejected')} className="reject">Reject</button>
-              </div>
-            </div>
-          ))
+  req.from ? (
+    <div key={req.from._id} className="request-card">
+      <span>{req.from.name} {isOnline(req.from._id) ? '🟢' : '🔴'}</span>
+      <div className="btn-group">
+        <button onClick={() => respond(req.from._id, 'accepted')} className="accept">Accept</button>
+        <button onClick={() => respond(req.from._id, 'rejected')} className="reject">Reject</button>
+      </div>
+    </div>
+  ) : null
+))
         )}
       </section>
 
@@ -156,11 +161,13 @@ const Teams = () => {
           <p className="no-data">No ongoing collaborations yet. Start building your dream team!</p>
         ) : (
           partners.map(p => (
-            <div key={p._id} className="partner-card">
-              <span>{p.name} {isOnline(p._id) ? '🟢' : '🔴'}</span>
-              <button onClick={() => handleChatNavigate(p._id)}>Open Chat</button>
-            </div>
-          ))
+  p ? (
+    <div key={p._id} className="partner-card">
+      <span>{p.name} {isOnline(p._id) ? '🟢' : '🔴'}</span>
+      <button onClick={() => handleChatNavigate(p._id)}>Open Chat</button>
+    </div>
+  ) : null
+))
         )}
       </section>
     </div>

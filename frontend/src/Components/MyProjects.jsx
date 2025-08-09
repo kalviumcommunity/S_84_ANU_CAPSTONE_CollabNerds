@@ -14,10 +14,8 @@ const MyProjects = () => {
       setLoading(true);
       const response = await axios.get('/api/projects/my-projects');
       
-      // console.log("🔥 Fetched projects:", response.data); 
       if (response.data.length > 0) {
-        console.log("🔥 First project pendingRequests:", 
-          response.data[0].pendingRequests);
+          response.data[0].pendingRequests;
       }
       
       setProjects(response.data);
